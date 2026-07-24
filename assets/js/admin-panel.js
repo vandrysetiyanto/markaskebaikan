@@ -37,19 +37,29 @@ function closeCampaignModal() {
 function switchAdminTab(tab) {
     var tabCampaigns = document.getElementById('tabCampaigns');
     var tabDonors = document.getElementById('tabDonors');
+    var tabPrograms = document.getElementById('tabPrograms');
     var contentCampaigns = document.getElementById('tabContentCampaigns');
     var contentDonors = document.getElementById('tabContentDonors');
-    if (!tabCampaigns || !tabDonors || !contentCampaigns || !contentDonors) return;
+    var contentPrograms = document.getElementById('tabContentPrograms');
+    if (!tabCampaigns || !tabDonors || !tabPrograms || !contentCampaigns || !contentDonors || !contentPrograms) return;
+    
+    tabCampaigns.className = 'tab-btn inactive';
+    tabDonors.className = 'tab-btn inactive';
+    tabPrograms.className = 'tab-btn inactive';
+    contentCampaigns.classList.add('hidden');
+    contentDonors.classList.add('hidden');
+    contentPrograms.classList.add('hidden');
+    
     if (tab === 'campaigns') {
         tabCampaigns.className = 'tab-btn active';
-        tabDonors.className = 'tab-btn inactive';
         contentCampaigns.classList.remove('hidden');
-        contentDonors.classList.add('hidden');
-    } else {
+    } else if (tab === 'donors') {
         tabDonors.className = 'tab-btn active';
-        tabCampaigns.className = 'tab-btn inactive';
         contentDonors.classList.remove('hidden');
-        contentCampaigns.classList.add('hidden');
+    } else if (tab === 'programs') {
+        tabPrograms.className = 'tab-btn active';
+        contentPrograms.classList.remove('hidden');
+        renderAdminProgramDonations();
     }
 }
 
@@ -831,6 +841,188 @@ function showToast(message, isError) {
         toast.classList.add('translate-y-20', 'opacity-0');
         toast.classList.remove('translate-y-0', 'opacity-100');
     }, 4000);
+}
+
+// ============================================
+// PROGRAM UNGGULAN — ADMIN FUNCTIONS
+// ============================================
+
+const STORAGE_KEY_PROGRAM_DONATIONS = 'mk_program_donations';
+
+function getProgramDonations() {
+    try {
+        var stored = localStorage.getItem(STORAGE_KEY_PROGRAM_DONATIONS);
+        if (!stored) return [];
+        var parsed = JSON.parse(stored);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+        console.warn('Gagal membaca data donasi program:', error);
+        return [];
+    }
+}
+
+function saveProgramDonations(donations) {
+    try {
+        localStorage.setItem(STORAGE_KEY_PROGRAM_DONATIONS, JSON.stringify(donations));
+        return true;
+    } catch (error) {
+        console.warn('Gagal menyimpan data donasi program:', error);
+        return false;
+    }
+}
+
+function getProgramCollected(programId) {
+    var donations = getProgramDonations();
+    var total = 0;
+    for (var i = 0; i < donations.length; i++) {
+        if (donations[i].programId === programId && donations[i].status === 'confirmed') {
+            total += Number(donations[i].amount);
+        }
+    }
+    return total;
+}
+
+function getProgramPending(programId) {
+    var donations = getProgramDonations();
+    var total = 0;
+    for (var i = 0; i < donations.length; i++) {
+        if (donations[i].programId === programId && donations[i].status === 'pending') {
+            total += Number(donations[i].amount);
+        }
+    }
+    return total;
+}
+
+function renderAdminProgramDonations() {
+    var container = document.getElementById('adminProgramDonationList');
+    if (!container) return;
+
+    // Update 3 cards
+    var programs = ['pendidikan', 'sedekah', 'infrastruktur'];
+    var barIds = ['progBarPendidikan', 'progBarSedekah', 'progBarInfrastruktur'];
+    var collectedIds = ['progCollectedPendidikan', 'progCollectedSedekah', 'progCollectedInfrastruktur'];
+    var pendingIds = ['progPendingPendidikan', 'progPendingSedekah', 'progPendingInfrastruktur'];
+    
+    for (var i = 0; i < programs.length; i++) {
+        var collected = getProgramCollected(programs[i]);
+        var pending = getProgramPending(programs[i]);
+        var total = collected + pending;
+        var percent = total > 0 ? Math.min(100, Math.round((collected / total) * 100)) : 0;
+        var barEl = document.getElementById(barIds[i]);
+        var colEl = document.getElementById(collectedIds[i]);
+        var penEl = document.getElementById(pendingIds[i]);
+        if (barEl) barEl.style.width = percent + '%';
+        if (colEl) colEl.innerText = formatRupiah(collected);
+        if (penEl) penEl.innerText = formatRupiah(pending) + ' pending';
+    }
+
+    // Render donation list
+    var filterStatus = document.getElementById('progFilterStatus').value;
+    var donations = getProgramDonations();
+    var filtered = donations.filter(function(d) {
+        return filterStatus === 'all' || d.status === filterStatus;
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = '<div class="rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-8 text-center text-slate-500">' +
+            (donations.length === 0
+                ? 'Belum ada donasi program unggulan. Data akan muncul setelah ada donasi yang masuk melalui halaman utama.'
+                : 'Tidak ada donasi program yang cocok dengan filter.') +
+            '</div>';
+        return;
+    }
+
+    container.innerHTML = filtered.map(function(d) {
+        var safeName = sanitizeHTML(d.name);
+        var safePhone = sanitizeHTML(d.phone || '-');
+        var safePrayer = sanitizeHTML(d.prayer || '-');
+        var safeProgram = sanitizeHTML(d.programName || '-');
+        var safePayment = sanitizeHTML(d.paymentMethod || '-');
+
+        // Program icon based on programId
+        var progIcons = { pendidikan: 'fa-graduation-cap', sedekah: 'fa-sun', infrastruktur: 'fa-faucet-drip' };
+        var progColors = { pendidikan: 'indigo', sedekah: 'amber', infrastruktur: 'emerald' };
+        var icon = progIcons[d.programId] || 'fa-star';
+        var color = progColors[d.programId] || 'slate';
+        var colorClasses = {
+            indigo: 'bg-indigo-100 text-indigo-700',
+            amber: 'bg-amber-100 text-amber-700',
+            emerald: 'bg-emerald-100 text-emerald-700',
+            slate: 'bg-slate-100 text-slate-700'
+        };
+        var iconClass = colorClasses[color] || colorClasses.slate;
+
+        var statusBadge = d.status === 'confirmed'
+            ? '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold"><i class="fa-solid fa-circle-check"></i> Dikonfirmasi</span>'
+            : '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold"><i class="fa-solid fa-clock"></i> Menunggu</span>';
+
+        return '<div class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden"><div class="p-5">' +
+            '<div class="flex items-center justify-between gap-3 mb-3">' +
+                '<div class="flex items-center gap-3">' +
+                    '<div class="w-10 h-10 rounded-xl ' + iconClass + ' font-bold flex items-center justify-center text-sm">' +
+                        '<i class="fa-solid ' + icon + '"></i>' +
+                    '</div>' +
+                    '<div>' +
+                        '<h4 class="text-sm font-bold text-slate-900">' + safeName + '</h4>' +
+                        '<p class="text-xs text-slate-500">' + safePhone + '</p>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="text-xs">' + statusBadge + '</div>' +
+            '</div>' +
+            '<div class="grid grid-cols-2 gap-2 text-xs text-slate-600 mb-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">' +
+                '<div><span class="text-slate-400">Nominal:</span> <strong class="text-slate-900">' + formatRupiah(d.amount) + '</strong></div>' +
+                '<div><span class="text-slate-400">Pembayaran:</span> <strong class="text-slate-900">' + safePayment + '</strong></div>' +
+                '<div class="col-span-2"><span class="text-slate-400">Program Unggulan:</span> <strong class="text-slate-900">' + safeProgram + '</strong></div>' +
+                '<div class="col-span-2"><span class="text-slate-400">Doa:</span> <em class="text-slate-700">"' + safePrayer + '"</em></div>' +
+                '<div class="col-span-2"><span class="text-slate-400">Tanggal:</span> ' + formatDate(d.date) + '</div>' +
+            '</div>' +
+            '<div class="flex flex-wrap gap-2">' +
+            (d.status === 'pending'
+                ? '<button type="button" onclick="confirmProgramDonor(\'' + d.id + '\')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition"><i class="fa-solid fa-check"></i> Konfirmasi</button>'
+                : '') +
+            '<button type="button" onclick="deleteProgramDonor(\'' + d.id + '\')" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-red-600 text-white text-xs font-semibold hover:bg-red-700 transition"><i class="fa-solid fa-trash"></i> Hapus</button>' +
+            '</div></div></div>';
+    }).join('');
+}
+
+function filterProgramDonations() {
+    renderAdminProgramDonations();
+}
+
+function confirmProgramDonor(donorId) {
+    try {
+        var donations = getProgramDonations();
+        var donor = null, donorIndex = -1;
+        for (var i = 0; i < donations.length; i++) {
+            if (donations[i].id === donorId && donations[i].status === 'pending') {
+                donor = donations[i];
+                donorIndex = i;
+                break;
+            }
+        }
+        if (!donor) { showToast('Donasi program tidak ditemukan atau sudah dikonfirmasi.', true); return; }
+        donations[donorIndex].status = 'confirmed';
+        saveProgramDonations(donations);
+        renderAdminProgramDonations();
+        showToast('Donasi program ' + sanitizeHTML(donor.name) + ' (Rp ' + Number(donor.amount).toLocaleString('id-ID') + ') berhasil dikonfirmasi.');
+    } catch (error) {
+        console.warn('Gagal mengkonfirmasi donasi program:', error);
+    }
+}
+
+function deleteProgramDonor(donorId) {
+    try {
+        var donations = getProgramDonations();
+        var filtered = donations.filter(function(d) { return d.id !== donorId; });
+        if (filtered.length === donations.length) return false;
+        saveProgramDonations(filtered);
+        renderAdminProgramDonations();
+        showToast('Donasi program berhasil dihapus.');
+        return true;
+    } catch (error) {
+        console.warn('Gagal menghapus donasi program:', error);
+        return false;
+    }
 }
 
 // ============================================

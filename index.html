@@ -15,13 +15,15 @@
     <meta property="og:url" content="https://markaskebaikan.org">
     <meta property="og:title" content="Markas Kebaikan - Platform Sedekah & Donasi Transparan">
     <meta property="og:description" content="Salurkan kebaikan untuk pendidikan, infrastruktur, dan sedekah rutin. 100% transparan & terlapor.">
-    <meta property="og:image" content="https://markaskebaikan.org/assets/logo.svg">
+    <meta property="og:image" content="https://markaskebaikan.org/assets/MARKASKEBAIKAN.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Markas Kebaikan - Platform Sedekah & Donasi Transparan">
     <meta name="twitter:description" content="Salurkan kebaikan untuk pendidikan, infrastruktur, dan sedekah rutin. 100% transparan & terlapor.">
-    <meta name="twitter:image" content="https://markaskebaikan.org/assets/logo.svg">
+    <meta name="twitter:image" content="https://markaskebaikan.org/assets/MARKASKEBAIKAN.png">
 
     <!-- Resource Hints for Performance -->
     <link rel="preconnect" href="https://images.unsplash.com">
@@ -67,6 +69,41 @@
         }
     </script>
     <link rel="stylesheet" href="styles.css">
+    <!-- JSON-LD Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NGO",
+      "name": "Markas Kebaikan",
+      "url": "https://markaskebaikan.org",
+      "logo": "https://markaskebaikan.org/assets/logo.svg",
+      "description": "Platform sedekah dan donasi transparan. Salurkan kebaikan untuk pendidikan, infrastruktur, dan sedekah rutin. 100% terlapor & terverifikasi.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Jl. Rambutan Barat 1 No.4, RT.11/RW.4, Tj. Duren Utara, Kec. Grogol petamburan",
+        "addressLocality": "Jakarta Barat",
+        "addressRegion": "DKI Jakarta",
+        "postalCode": "11470",
+        "addressCountry": "ID"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+62-856-9757-0255",
+        "contactType": "customer service",
+        "availableLanguage": ["Indonesian", "English"]
+      },
+      "sameAs": [
+        "https://www.instagram.com/markaskebaikan",
+        "https://www.tiktok.com/@markaskebaikan",
+        "https://www.youtube.com/@markaskebaikan",
+        "https://wa.me/6285697570255"
+      ],
+      "funder": {
+        "@type": "FundingAgency",
+        "name": "Donatur & Masyarakat Peduli"
+      }
+    }
+    </script>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased">
 
@@ -709,6 +746,9 @@
             <div class="p-6 sm:p-8 space-y-7">
                 <!-- Tagline -->
                 <div>
+                    <span class="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1.5 rounded-full mb-3 border border-emerald-200">
+                        <i class="fa-solid fa-infinity"></i> Program Berkelanjutan — Tidak Musiman
+                    </span>
                     <p id="progTagline" class="text-base sm:text-lg text-slate-700 font-semibold leading-relaxed"></p>
                     <div class="w-12 h-1 bg-brand-600 rounded-full mt-3"></div>
                 </div>

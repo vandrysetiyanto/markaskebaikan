@@ -561,6 +561,9 @@ function openProgramDetail(programId) {
     document.getElementById('progNarasi').innerText = prog.narasi;
     document.getElementById('progImage').src = prog.image;
     document.getElementById('progImage').alt = prog.title;
+    document.getElementById('progImage').onerror = function() {
+        this.src = 'https://placehold.co/800x400/059669/ffffff?text=Markas+Kebaikan';
+    };
 
     // Stats
     var statsContainer = document.getElementById('progStats');

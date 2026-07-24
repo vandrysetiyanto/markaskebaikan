@@ -526,7 +526,13 @@ function renderAdminCampaignList() {
         count.innerText = '0';
         return;
     }
-    list.innerHTML = campaignsData.map(function(c) {
+    
+    // Sort campaignsData: newest first (since we generate id using Date.now() / numbers, we sort descending by id)
+    var sortedCampaigns = campaignsData.slice().sort(function(a, b) {
+        return Number(b.id) - Number(a.id);
+    });
+
+    list.innerHTML = sortedCampaigns.map(function(c) {
         var percent = Math.min(100, Math.round((c.collected / c.target) * 100));
         var safeTitle = sanitizeHTML(c.title);
         var safeCategory = sanitizeHTML(c.category);
@@ -545,6 +551,7 @@ function renderAdminCampaignList() {
     }).join('');
     count.innerText = campaignsData.length;
 }
+>>>>+
 
 function resetAdminForm() {
     var form = document.getElementById('adminCampaignForm');

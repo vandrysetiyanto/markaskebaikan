@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markas Kebaikan - Platform Sedekah & Donasi Transparan</title>
+    <meta name="description" content="Platform sedekah dan donasi transparan. Salurkan kebaikan untuk pendidikan, infrastruktur, dan sedekah rutin. 100% terlapor & terverifikasi.">
+    <meta name="keywords" content="donasi, sedekah, zakat, infaq, markas kebaikan, platform donasi transparan, amal, galang dana">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://markaskebaikan.org">
+    <link rel="icon" type="image/x-icon" href="assets/MK.ico">
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://markaskebaikan.org">
+    <meta property="og:title" content="Markas Kebaikan - Platform Sedekah & Donasi Transparan">
+    <meta property="og:description" content="Salurkan kebaikan untuk pendidikan, infrastruktur, dan sedekah rutin. 100% transparan & terlapor.">
+    <meta property="og:image" content="https://markaskebaikan.org/assets/logo.svg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Markas Kebaikan - Platform Sedekah & Donasi Transparan">
+    <meta name="twitter:description" content="Salurkan kebaikan untuk pendidikan, infrastruktur, dan sedekah rutin. 100% transparan & terlapor.">
+    <meta name="twitter:image" content="https://markaskebaikan.org/assets/logo.svg">
+
+    <!-- Resource Hints for Performance -->
+    <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//images.unsplash.com">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <link rel="preload" href="assets/MK.ico" as="image">
+    <link rel="preload" href="assets/logo.svg" as="image">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                        },
+                        accent: {
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+    <!-- NAVIGATION BAR -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-14">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-md shadow-slate-200 overflow-hidden">
+                        <img src="assets/MK.ico" alt="Markas Kebaikan Logo" class="w-8 h-8 object-contain" />
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold text-slate-900 tracking-tight">Markas<span class="text-brand-600">Kebaikan</span></span>
+                        <span class="block text-[10px] text-slate-500 font-medium tracking-wider -mt-1 uppercase">Platform Sedekah Transparan</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav Navigation -->
+                <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold text-slate-600">
+                    <a href="#beranda" class="hover:text-brand-600 transition">Beranda</a>
+                    <a href="#program-unggulan" class="hover:text-brand-600 transition">Program Unggulan</a>
+                    <a href="#kampanye-aktif" class="hover:text-brand-600 transition">Donasi Aktif</a>
+                    <a href="#kisah-dampak" class="hover:text-brand-600 transition">Program Selesai</a>
+                    <a href="#cara-berbagi" class="hover:text-brand-600 transition">Cara Berbagi</a>
+                </nav>
+
+                <!-- Action Button -->
+                <div class="hidden sm:flex items-center space-x-4">
+                    <a href="#kampanye-aktif" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-md shadow-brand-600/20 hover:shadow-lg transition-all duration-200">
+                        <i class="fa-solid fa-hand-holding-heart mr-2"></i>Donasi Sekarang
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="md:hidden text-slate-600 hover:text-slate-900 p-2 focus:outline-none">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Navigation -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-slate-100 px-4 pt-2 pb-6 space-y-3">
+            <a href="#beranda" class="block py-2 text-slate-700 font-medium hover:text-brand-600">Beranda</a>
+            <a href="#program-unggulan" class="block py-2 text-slate-700 font-medium hover:text-brand-600">Program Unggulan</a>
+            <a href="#kampanye-aktif" class="block py-2 text-slate-700 font-medium hover:text-brand-600">Donasi Aktif</a>
+            <a href="#kisah-dampak" class="block py-2 text-slate-700 font-medium hover:text-brand-600">Program Selesai</a>
+            <a href="#cara-berbagi" class="block py-2 text-slate-700 font-medium hover:text-brand-600">Cara Berbagi</a>
+            <a href="#kampanye-aktif" class="block w-full text-center bg-brand-600 text-white font-semibold py-3 rounded-xl shadow mt-2">
+                Donasi Sekarang
+            </a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="beranda" class="relative pt-8 pb-14 lg:pt-12 lg:pb-16 overflow-hidden bg-gradient-to-b from-brand-50/50 to-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Hero Left Content (7 columns) -->
+                <div class="lg:col-span-7 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-100 text-brand-800 text-xs font-semibold mb-6 border border-brand-200">
+                        <span class="w-2 h-2 rounded-full bg-brand-600 animate-ping"></span>
+                        <i class="fa-solid fa-circle-check text-brand-600"></i> Platform Donasi 100% Transparan & Terverifikasi
+                    </div>
+                    
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight mb-5">
+                        Satu Kebaikan Kecilmu, <br class="hidden sm:inline"/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-emerald-500">Alasan Seseorang Tersenyum</span> Hari Ini.
+                    </h1>
+                    
+                    <p class="text-base sm:text-lg text-slate-600 mb-6 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        Bersama <strong class="font-semibold">Markas Kebaikan</strong>, mari ringankan langkah anak-anak meraih impian, bangun fasilitas umum layak, dan alirkan pahala jariah tanpa putus untuk sesama.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#program-unggulan" class="w-full sm:w-auto px-7 py-3.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold text-base shadow-lg shadow-brand-600/30 hover:shadow-xl transition-all duration-200 text-center">
+                            Mulai Berbagi Kebaikan <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+                        </a>
+                        <a href="#program-unggulan" class="w-full sm:w-auto px-7 py-3.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl font-bold text-base transition-all duration-200 text-center">
+                            Pelajari Program
+                        </a>
+                    </div>
+
+                    <!-- Trust Micro-Badges -->
+                    <div class="mt-10 pt-8 border-t border-slate-200/80 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-slate-500 text-xs font-medium">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved text-brand-600 text-base"></i> Transaksi Aman & Terenkripsi
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-qrcode text-brand-600 text-base"></i> Dukungan Instant QRIS & E-Wallet
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-file-invoice text-brand-600 text-base"></i> Laporan Otomatis via WA
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Right — 3 Mini Cards Program Unggulan (5 columns) -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1 text-center lg:text-left">
+                        <i class="fa-solid fa-star text-amber-400 mr-1"></i> Pilih Program Unggulan
+                    </div>
+
+                    <!-- Card 1: Pendidikan -->
+                    <div class="bg-white rounded-xl shadow-md border border-slate-100 overflow-hidden hover:shadow-lg transition group cursor-pointer" onclick="openProgramDetail('pendidikan')">
+                        <div class="p-4 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-0.5">
+                                    <h3 class="text-sm font-bold text-slate-900">Orang Tua Asuh</h3>
+                                    <span class="text-xs font-bold text-brand-600" id="heroProgPendidikan">Rp 0</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-1.5 mb-1 overflow-hidden">
+                                    <div id="heroBarPendidikan" class="bg-indigo-500 h-1.5 rounded-full" style="width:0%"></div>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-slate-400">
+                                    <span id="heroPendLabel">0% terkumpul</span>
+                                    <span><i class="fa-regular fa-clock mr-0.5"></i>Berkelanjutan</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-brand-600 transition shrink-0"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Sedekah Rutin -->
+                    <div class="bg-white rounded-xl shadow-md border border-slate-100 overflow-hidden hover:shadow-lg transition group cursor-pointer" onclick="openProgramDetail('sedekah')">
+                        <div class="p-4 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-sun"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-0.5">
+                                    <h3 class="text-sm font-bold text-slate-900">Sedekah Rutin</h3>
+                                    <span class="text-xs font-bold text-brand-600" id="heroProgSedekah">Rp 0</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-1.5 mb-1 overflow-hidden">
+                                    <div id="heroBarSedekah" class="bg-amber-500 h-1.5 rounded-full" style="width:0%"></div>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-slate-400">
+                                    <span id="heroSedLabel">0% terkumpul</span>
+                                    <span><i class="fa-regular fa-clock mr-0.5"></i>Berkelanjutan</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-brand-600 transition shrink-0"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Infrastruktur -->
+                    <div class="bg-white rounded-xl shadow-md border border-slate-100 overflow-hidden hover:shadow-lg transition group cursor-pointer" onclick="openProgramDetail('infrastruktur')">
+                        <div class="p-4 flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shrink-0">
+                                <i class="fa-solid fa-faucet-drip"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-0.5">
+                                    <h3 class="text-sm font-bold text-slate-900">Pembangunan & Infrastruktur</h3>
+                                    <span class="text-xs font-bold text-brand-600" id="heroProgInfrastruktur">Rp 0</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-1.5 mb-1 overflow-hidden">
+                                    <div id="heroBarInfrastruktur" class="bg-emerald-500 h-1.5 rounded-full" style="width:0%"></div>
+                                </div>
+                                <div class="flex justify-between text-[10px] text-slate-400">
+                                    <span id="heroInfLabel">0% terkumpul</span>
+                                    <span><i class="fa-regular fa-clock mr-0.5"></i>Berkelanjutan</span>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-brand-600 transition shrink-0"></i>
+                        </div>
+                    </div>
+
+                    <div class="text-center pt-1">
+                        <a href="#program-unggulan" class="text-xs text-brand-600 font-semibold hover:text-brand-700 transition">
+                            Lihat Detail Program Unggulan <i class="fa-solid fa-arrow-down ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TRUST BANNER STATS -->
+            <div class="mt-14 bg-white rounded-2xl p-6 sm:p-8 shadow-lg border border-slate-100 grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
+                <div class="border-r border-slate-100 last:border-0 md:last:border-r">
+                    <p class="text-2xl sm:text-4xl font-extrabold text-brand-600 mb-1">Rp 2.4 Miliar+</p>
+                    <p class="text-xs sm:text-sm font-medium text-slate-500">Dana Terdistribusi</p>
+                </div>
+                <div class="border-r border-slate-100 last:border-0 md:last:border-r">
+                    <p class="text-2xl sm:text-4xl font-extrabold text-slate-900 mb-1">12.500+</p>
+                    <p class="text-xs sm:text-sm font-medium text-slate-500">Penerima Manfaat</p>
+                </div>
+                <div class="col-span-2 md:col-span-1 border-r-0">
+                    <p class="text-2xl sm:text-4xl font-extrabold text-slate-900 mb-1">98+</p>
+                    <p class="text-xs sm:text-sm font-medium text-slate-500">Project Selesai Terbangun</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- PROGRAM UNGGULAN -->
+    <section id="program-unggulan" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="text-brand-600 font-bold text-xs uppercase tracking-wider mb-2 block">Pilihan Jalur Kebaikan</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-4">Program Unggulan Markas Kebaikan</h2>
+                <p class="text-slate-600 text-sm sm:text-base">
+                    Pilih program berkelanjutan yang dirancang untuk memberikan dampak positif jangka panjang bagi generasi penerus.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-6">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Orang Tua Asuh Pendidikan</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                            Dampingi anak-anak kurang mampu agar tidak putus sekolah. Jadi alasan mereka meraih mimpi dan cita-cita masa depan.
+                        </p>
+                    </div>
+                    <button onclick="openProgramDetail('pendidikan')" class="inline-flex items-center text-brand-600 font-bold text-sm hover:text-brand-700 cursor-pointer">
+                        Lihat Program <i class="fa-solid fa-chevron-right ml-2 text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-6">
+                            <i class="fa-solid fa-sun"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Sedekah Rutin & Subuh</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                            Mulai harimu dengan keberkahan. Sedekah harian untuk penyediaan pangan, kesehatan lansia, dan bantuan tanggap bencana.
+                        </p>
+                    </div>
+                    <button onclick="openProgramDetail('sedekah')" class="inline-flex items-center text-brand-600 font-bold text-sm hover:text-brand-700 cursor-pointer">
+                        Lihat Program <i class="fa-solid fa-chevron-right ml-2 text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl font-bold mb-6">
+                            <i class="fa-solid fa-faucet-drip"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Pembangunan & Infrastruktur</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                            Tanam amalan jariah yang pahalanya terus mengalir dengan membantu pembangunan sumur air bersih, madrasah, dan jembatan.
+                        </p>
+                    </div>
+                    <button onclick="openProgramDetail('infrastruktur')" class="inline-flex items-center text-brand-600 font-bold text-sm hover:text-brand-700 cursor-pointer">
+                        Lihat Program <i class="fa-solid fa-chevron-right ml-2 text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PENGGALANGAN DANA AKTIF (Active Campaigns) -->
+    <section id="kampanye-aktif" class="py-20 bg-white border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <span class="text-brand-600 font-bold text-xs uppercase tracking-wider mb-2 block">Penggalangan Dana Berlangsung</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900">Bantu Mereka Hari Ini</h2>
+                </div>
+                <p class="text-slate-500 text-sm max-w-md mt-2 md:mt-0">
+                    Uluran tanganmu saat ini sangat menentukan senyum dan harapan mereka esok hari.
+                </p>
+            </div>
+
+            <!-- Campaign Cards Container (Populated by JS for real-time progress updates) -->
+            <div id="campaignListContainer" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Javascript akan inject kartu kampanye real-time via script.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- PROGRAM YANG TELAH SELESAI (Completed Campaigns & Impact Proof) -->
+    <section id="kisah-dampak" class="py-20 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="bg-brand-500/20 text-brand-400 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wider mb-3 inline-block">Bukti Nyata Dampak</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Jejak Kebaikan yang Telah Terwujud</h2>
+                <p class="text-slate-400 text-sm sm:text-base">
+                    Terima kasih kepada para dermawan. Berikut adalah laporan singkat program yang telah berhasil selesai dilaksanakan.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Completed Campaign 1 -->
+                <div class="bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-700/80 flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-56 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1000&auto=format&fit=crop" 
+                                 alt="Renovasi Madrasah Selesai" 
+                                 class="w-full h-full object-cover"
+                                 loading="lazy">
+                            <div class="absolute top-4 left-4">
+                                <span class="bg-emerald-500 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-full shadow-lg">
+                                    <i class="fa-solid fa-circle-check mr-1"></i> 100% SELESAI & TERDISTRIBUSI
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-3">Renovasi Madrasah Ambruk di Sukabumi</h3>
+                            <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+                                *"120 Santri kini dapat belajar dengan tenang tanpa rasa takut atap bocor atau bangunan roboh."*
+                            </p>
+                            
+                            <!-- Completed Progress Bar -->
+                            <div class="w-full bg-slate-700 rounded-full h-2.5 mb-2">
+                                <div class="bg-emerald-500 h-2.5 rounded-full w-full"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-slate-400 font-medium mb-4">
+                                <span class="text-emerald-400 font-bold">Terkumpul: Rp 95.000.000</span>
+                                <span>Target: Rp 95.000.000</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0">
+                        <button onclick="openImpactModal('Renovasi Madrasah Sukabumi', 'Rp 95.000.000', '120 Santri', 'Bangunan madrasah selesai diresmikan pada bulan lalu lengkap dengan meja belajar, papan tulis, dan perlengkapan kelas baru.')" 
+                                class="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold text-sm rounded-xl transition text-center">
+                            <i class="fa-regular fa-file-lines mr-2"></i> Lihat Laporan Implementasi
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Completed Campaign 2 -->
+                <div class="bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-700/80 flex flex-col justify-between">
+                    <div>
+                        <div class="relative h-56 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1000&auto=format&fit=crop" 
+                                 alt="Beasiswa Kelulusan Siswa" 
+                                 class="w-full h-full object-cover"
+                                 loading="lazy">
+                            <div class="absolute top-4 left-4">
+                                <span class="bg-emerald-500 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-full shadow-lg">
+                                    <i class="fa-solid fa-circle-check mr-1"></i> 100% SELESAI & TERDISTRIBUSI
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-3">Program Orang Tua Asuh: Beasiswa 30 Siswa SMA</h3>
+                            <p class="text-slate-300 text-sm mb-4 leading-relaxed">
+                                *"30 Siswa dhuafa berhasil menyelesaikan pendidikan jenjang SMA dan mendapatkan sertifikasi pelatihan kerja."*
+                            </p>
+                            
+                            <!-- Completed Progress Bar -->
+                            <div class="w-full bg-slate-700 rounded-full h-2.5 mb-2">
+                                <div class="bg-emerald-500 h-2.5 rounded-full w-full"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-slate-400 font-medium mb-4">
+                                <span class="text-emerald-400 font-bold">Terkumpul: Rp 61.200.000</span>
+                                <span>Target: Rp 60.000.000</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0">
+                        <button onclick="openImpactModal('Beasiswa 30 Siswa SMA', 'Rp 61.200.000', '30 Siswa SMA', 'Seluruh biaya SPP, buku, dan ujian akhir 30 siswa dhuafa telah dilunasi 100% hingga mereka lulus.')" 
+                                class="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold text-sm rounded-xl transition text-center">
+                            <i class="fa-regular fa-file-lines mr-2"></i> Lihat Laporan Implementasi
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CARA BERBAGI (Step-by-step) -->
+    <section id="cara-berbagi" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-brand-600 font-bold text-xs uppercase tracking-wider mb-2 block">Alur Sederhana</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-4">Mudahnya Menebar Kebaikan</h2>
+                <p class="text-slate-600 text-sm">Hanya butuh waktu kurang dari 1 menit untuk mengukir senyuman mereka.</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+                <!-- Step 1 -->
+                <div class="text-center relative">
+                    <div class="w-16 h-16 bg-brand-50 text-brand-600 font-extrabold text-2xl rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-brand-100">
+                        1
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Pilih Program</h3>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                        Temukan kisah atau program kebaikan yang paling menyentuh hatimu.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="text-center relative">
+                    <div class="w-16 h-16 bg-brand-50 text-brand-600 font-extrabold text-2xl rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-brand-100">
+                        2
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Isi Nominal & Doa</h3>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                        Masukkan jumlah nominal sedekah dan selipkan doa terbaikmu.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="text-center relative">
+                    <div class="w-16 h-16 bg-brand-50 text-brand-600 font-extrabold text-2xl rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-brand-100">
+                        3
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Transfer Kemudahan</h3>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                        Bayar instant via QRIS, GoPay, OVO, ShopeePay, atau Bank Transfer.
+                    </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="text-center relative">
+                    <div class="w-16 h-16 bg-brand-50 text-brand-600 font-extrabold text-2xl rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-brand-100">
+                        4
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Terima Laporan</h3>
+                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                        Dapatkan kabar pembaruan berkala dan foto penyaluran via WhatsApp.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS (Social Proof) -->
+    <section class="py-20 bg-slate-50 border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-4">Apa Kata Sahabat Kebaikan?</h2>
+                <p class="text-slate-600 text-sm">Cerita dari mereka yang telah menjadi bagian dari gerakan Markas Kebaikan.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm relative">
+                    <div class="text-amber-400 text-sm mb-4">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-700 text-sm leading-relaxed italic mb-6">
+                        "Awalnya ragu donasi online, tapi di Markas Kebaikan laporan penyalurannya transparan banget! Ada update foto dan rincian penggunaan dana via WA. Rasanya senang bisa bantu adik-adik sekolah dari HP saja."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-700 font-bold flex items-center justify-center">
+                            RP
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-slate-900">Rizky Pratama</p>
+                            <p class="text-xs text-slate-500">Donatur Muda (24 th, Digital Marketer)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm relative">
+                    <div class="text-amber-400 text-sm mb-4">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-slate-700 text-sm leading-relaxed italic mb-6">
+                        "Terima kasih para donatur Markas Kebaikan. Sekarang warga desa kami tidak perlu berjalan 3 KM lagi untuk ambil air bersih. Sumur bor baru ini sangat membantu kehidupan kami sehari-hari."
+                    </p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-700 font-bold flex items-center justify-center">
+                            PR
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-slate-900">Pak Rahmat</p>
+                            <p class="text-xs text-slate-500">Tokoh Masyarakat Penerima Manfaat</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VALUE PROPOSITION (3 PILAR) — DIPINDAHKAN KE BAWAH TESTIMONI -->
+    <section class="py-16 bg-white border-y border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-4">
+                    Mengalirkan Kebaikan dengan Aman, Tepat, dan Transparan
+                </h2>
+                <p class="text-slate-600 text-sm sm:text-base">
+                    Kami memastikan setiap rupiah yang Anda titipkan menjadi kebaikan berdampak panjang bagi penerima manfaat.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Pillar 1 -->
+                <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center text-xl font-bold mb-5">
+                        <i class="fa-solid fa-file-shield"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">100% Terlapor & Transparan</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Setiap rupiah yang kamu salurkan tercatat secara terbuka dan dilaporkan secara berkala melalui WhatsApp & Email donatur.
+                    </p>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl font-bold mb-5">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Langsung ke Sasaran</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Tim lapangan kami turun langsung memverifikasi setiap calon penerima manfaat agar bantuan tepat guna dan tidak salah sasaran.
+                    </p>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-md transition">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl font-bold mb-5">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-2">Kemudahan Berbagi Instant</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Berdonasi dalam hitungan detik dari smartphone menggunakan QRIS, GoPay, OVO, ShopeePay, hingga Virtual Account Bank.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALL TO ACTION BANNER -->
+    <section class="py-16 bg-gradient-to-r from-brand-600 to-emerald-600 text-white">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <h2 class="text-3xl sm:text-4xl font-extrabold mb-4">Siap Menjadi Alasan Tersenyum Hari Ini?</h2>
+            <p class="text-brand-100 text-base sm:text-lg mb-8 max-w-2xl mx-auto">
+                Jangan tunda niat baikmu. Sedekah sekecil apa pun sangat berarti bagi mereka yang membutuhkan.
+            </p>
+            <a href="#kampanye-aktif" class="inline-block px-8 py-4 bg-white text-brand-700 rounded-xl font-bold text-base shadow-xl hover:bg-slate-100 transition">
+                Sedekah Sekarang <i class="fa-solid fa-heart text-red-500 ml-2"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 pt-16 pb-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                <!-- Col 1 -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm overflow-hidden">
+                            <img src="assets/MK.ico" alt="Markas Kebaikan Logo" class="w-6 h-6 object-contain" />
+                        </div>
+                        <span class="text-xl font-bold text-white">Markas<span class="text-brand-500">Kebaikan</span></span>
+                    </div>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-6 max-w-md">
+                        Komunitas & Platform Sedekah Transparan untuk Indonesia Lebih Baik. Menghubungkan kepedulian Anda langsung ke tangan mereka yang membutuhkan.
+                    </p>
+                    <div class="flex space-x-4 text-slate-400">
+                        <a href="#" class="hover:text-white transition"><i class="fa-brands fa-instagram text-xl"></i></a>
+                        <a href="#" class="hover:text-white transition"><i class="fa-brands fa-tiktok text-xl"></i></a>
+                        <a href="#" class="hover:text-white transition"><i class="fa-brands fa-youtube text-xl"></i></a>
+                        <a href="#" class="hover:text-white transition"><i class="fa-brands fa-whatsapp text-xl"></i></a>
+                    </div>
+                </div>
+
+                <!-- Col 2 -->
+                <div>
+                    <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Program</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#program-unggulan" class="hover:text-white transition">Orang Tua Asuh</a></li>
+                        <li><a href="#program-unggulan" class="hover:text-white transition">Sedekah Subuh</a></li>
+                        <li><a href="#program-unggulan" class="hover:text-white transition">Pembangunan Sumur Air</a></li>
+                        <li><a href="#program-unggulan" class="hover:text-white transition">Tanggap Bencana</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3 -->
+                <div>
+                    <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Kontak & Alamat</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-location-dot mt-1 text-brand-500"></i>
+                            <span>Jl. Rambutan Barat 1 No.4, RT.11/RW.4, Tj. Duren Utara, Kec. Grogol petamburan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta 11470</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fa-solid fa-envelope text-brand-500"></i>
+                            <span>support@markaskebaikan.org</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fa-solid fa-phone text-brand-500"></i>
+                            <span>+62 856-9757-0255</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Payment Icons Banner -->
+            <div class="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+                <p>© 2026 Markas Kebaikan. All Rights Reserved.</p>
+                <div class="flex items-center gap-3 text-slate-500">
+                    <span>Metode Pembayaran:</span>
+                    <span class="bg-slate-800 px-2 py-1 rounded text-white font-bold">QRIS</span>
+                    <span class="bg-slate-800 px-2 py-1 rounded text-white font-bold">GOPAY</span>
+                    <span class="bg-slate-800 px-2 py-1 rounded text-white font-bold">OVO</span>
+                    <span class="bg-slate-800 px-2 py-1 rounded text-white font-bold">BCA</span>
+                    <span class="bg-slate-800 px-2 py-1 rounded text-white font-bold">MANDIRI</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL DETAIL PROGRAM UNGGULAN -->
+    <div id="programModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-3xl w-full shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <!-- Close Button -->
+            <button onclick="closeProgramDetail()" class="absolute top-4 right-4 z-10 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 shadow-lg border border-slate-200">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Hero Image Section -->
+            <div class="relative h-56 sm:h-72 overflow-hidden rounded-t-3xl">
+                <img id="progImage" src="" alt="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                
+                <!-- Icon & Badge -->
+                <div class="absolute bottom-5 left-6 flex items-end gap-4">
+                    <div id="progIconWrap" class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg bg-white/95">
+                        <i id="progIcon" class="fa-solid fa-graduation-cap text-3xl text-indigo-600"></i>
+                    </div>
+                    <div class="text-white">
+                        <span id="progBadge" class="text-xs font-semibold bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">Subtitle</span>
+                        <h2 id="progTitle" class="text-xl sm:text-2xl font-extrabold mt-1 leading-tight">Program Title</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 sm:p-8 space-y-7">
+                <!-- Tagline -->
+                <div>
+                    <p id="progTagline" class="text-base sm:text-lg text-slate-700 font-semibold leading-relaxed"></p>
+                    <div class="w-12 h-1 bg-brand-600 rounded-full mt-3"></div>
+                </div>
+
+                <!-- Narasi -->
+                <div class="bg-slate-50 rounded-2xl p-5 border border-slate-100">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center shrink-0 mt-0.5">
+                            <i class="fa-solid fa-quote-left text-sm"></i>
+                        </div>
+                        <p id="progNarasi" class="text-sm text-slate-600 leading-relaxed italic"></p>
+                    </div>
+                </div>
+
+                <!-- Impact Stats Grid -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-simple text-brand-600"></i> Dampak Program
+                    </h4>
+                    <div id="progStats" class="grid grid-cols-3 gap-3"></div>
+                </div>
+
+                <!-- Benefits List -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-brand-600"></i> Apa Saja yang Didonasikan?
+                    </h4>
+                    <ul id="progBenefits" class="space-y-3"></ul>
+                </div>
+
+                <!-- Testimoni Section -->
+                <div class="bg-gradient-to-r from-slate-50 to-brand-50 rounded-2xl p-5 border border-brand-100">
+                    <div class="flex items-start gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-600 text-white flex items-center justify-center shrink-0 font-bold text-sm">
+                            <span id="progTestiNameInitial">A</span>
+                        </div>
+                        <div>
+                            <p id="progTestiText" class="text-sm text-slate-700 italic leading-relaxed mb-2"></p>
+                            <div>
+                                <p id="progTestiName" class="text-sm font-bold text-slate-900"></p>
+                                <p id="progTestiRole" class="text-xs text-slate-500"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DONATION FORM (LANGSUNG DI MODAL PROGRAM) -->
+                <div class="border-t border-slate-100 pt-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-hand-holding-heart text-brand-600"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Formulir Sedekah Program Ini</span>
+                    </div>
+
+                    <form id="progForm" onsubmit="processProgramDonation(event)">
+                        <input type="hidden" id="progCampaignId">
+
+                        <!-- Fast Nominal Preset -->
+                        <div class="mb-4">
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Pilih Nominal Sedekah</label>
+                            <div class="grid grid-cols-3 gap-2 mb-3">
+                                <button type="button" onclick="selectProgNominal(25000)" class="prog-nominal-btn border border-slate-200 rounded-xl py-2.5 text-xs font-bold hover:border-brand-600 hover:bg-brand-50 transition">
+                                    Rp 25.000
+                                </button>
+                                <button type="button" onclick="selectProgNominal(50000)" class="prog-nominal-btn border border-slate-200 rounded-xl py-2.5 text-xs font-bold hover:border-brand-600 hover:bg-brand-50 transition">
+                                    Rp 50.000
+                                </button>
+                                <button type="button" onclick="selectProgNominal(100000)" class="prog-nominal-btn border border-slate-200 rounded-xl py-2.5 text-xs font-bold hover:border-brand-600 hover:bg-brand-50 transition">
+                                    Rp 100.000
+                                </button>
+                            </div>
+                            <div class="relative">
+                                <span class="absolute left-4 top-3.5 text-slate-400 text-sm font-bold">Rp</span>
+                                <input type="number" id="progCustomAmount" placeholder="Nominal Lainnya..." required min="10000"
+                                       class="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Donor Name & Contact -->
+                        <div class="space-y-3 mb-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Nama Donatur</label>
+                                <input type="text" id="progDonorName" placeholder="Contoh: Hamba Allah / Rizky" required
+                                       class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Nomor WhatsApp (Untuk Laporan)</label>
+                                <input type="tel" id="progDonorPhone" placeholder="081234567890" required
+                                       class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Doa / Harapan Terbaik (Opsional)</label>
+                                <textarea id="progDonorPrayer" rows="2" placeholder="Tuliskan doa terbaikmu untuk penerima manfaat..."
+                                          class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Payment Method Select -->
+                        <div class="mb-4">
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Metode Pembayaran</label>
+                            <select id="progPaymentMethod" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-brand-500 focus:outline-none bg-slate-50">
+                                <option value="qris">Instant QRIS (GoPay, OVO, ShopeePay, Dana)</option>
+                                <option value="bca">Virtual Account BCA</option>
+                                <option value="mandiri">Virtual Account Mandiri</option>
+                                <option value="bsi">Virtual Account BSI</option>
+                            </select>
+                        </div>
+
+                        <!-- Submit CTA -->
+                        <button type="submit" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-600/30 transition text-base">
+                            <i class="fa-solid fa-hand-holding-heart mr-2"></i> <span id="progCtaLabel">Sedekah Sekarang</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Back Link -->
+                <div class="text-center pt-4">
+                    <button onclick="closeProgramDetail()" class="text-sm text-slate-400 hover:text-slate-600 font-medium transition">
+                        <i class="fa-solid fa-chevron-left mr-1"></i> Kembali ke Program Unggulan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DONASI INSTANT (untuk campaign biasa) -->
+    <div id="donationModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <!-- Close Button -->
+            <button onclick="closeDonationModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <!-- Header -->
+            <div class="mb-6">
+                <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Formulir Sedekah</span>
+                <h3 id="modalCampaignTitle" class="text-xl font-extrabold text-slate-900 mt-2">Judul Kampanye</h3>
+            </div>
+
+            <!-- Form -->
+            <form id="donationForm" onsubmit="processDonation(event)">
+                <input type="hidden" id="modalCampaignId">
+
+                <!-- Fast Nominal Preset -->
+                <div class="mb-5">
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Pilih Nominal Sedekah</label>
+                    <div class="grid grid-cols-3 gap-2 mb-3">
+                        <button type="button" onclick="selectNominal(25000)" class="nominal-btn border border-slate-200 rounded-xl py-2.5 text-xs font-bold hover:border-brand-600 hover:bg-brand-50 transition">
+                            Rp 25.000
+                        </button>
+                        <button type="button" onclick="selectNominal(50000)" class="nominal-btn border border-slate-200 rounded-xl py-2.5 text-xs font-bold hover:border-brand-600 hover:bg-brand-50 transition">
+                            Rp 50.000
+                        </button>
+                        <button type="button" onclick="selectNominal(100000)" class="nominal-btn border border-slate-200 rounded-xl py-2.5 text-xs font-bold hover:border-brand-600 hover:bg-brand-50 transition">
+                            Rp 100.000
+                        </button>
+                    </div>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3.5 text-slate-400 text-sm font-bold">Rp</span>
+                        <input type="number" id="customAmount" placeholder="Nominal Lainnya..." required min="10000"
+                               class="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-xl text-sm font-bold focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- Donor Name & Contact -->
+                <div class="space-y-4 mb-5">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Nama Donatur</label>
+                        <input type="text" id="donorName" placeholder="Contoh: Hamba Allah / Rizky" required
+                               class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Nomor WhatsApp (Untuk Laporan)</label>
+                        <input type="tel" id="donorPhone" placeholder="081234567890" required
+                               class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Doa / Harapan Terbaik (Opsional)</label>
+                        <textarea id="donorPrayer" rows="2" placeholder="Tuliskan doa terbaikmu untuk penerima manfaat..."
+                                  class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
+                    </div>
+                </div>
+
+                <!-- Payment Method Select -->
+                <div class="mb-6">
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Metode Pembayaran</label>
+                    <select id="paymentMethod" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-brand-500 focus:outline-none bg-slate-50">
+                        <option value="qris">Instant QRIS (GoPay, OVO, ShopeePay, Dana)</option>
+                        <option value="bca">Virtual Account BCA</option>
+                        <option value="mandiri">Virtual Account Mandiri</option>
+                        <option value="bsi">Virtual Account BSI</option>
+                    </select>
+                </div>
+
+                <!-- Submit CTA -->
+                <button type="submit" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-600/30 transition text-base">
+                    Lanjutkan Pembayaran <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL LAPORAN DAMPAK (Impact Report Modal) -->
+    <div id="impactModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+            <button onclick="closeImpactModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-2">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-bold">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h3 id="impactTitle" class="text-xl font-bold text-slate-900">Laporan Implementasi</h3>
+                <span class="text-xs text-slate-400 font-medium">Status: Selesai & Terverifikasi Audit</span>
+            </div>
+
+            <div class="space-y-4 text-sm text-slate-600 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                <div class="flex justify-between border-b border-slate-200 pb-2">
+                    <span class="font-medium text-slate-500">Total Saluran:</span>
+                    <span id="impactAmount" class="font-bold text-slate-900">Rp 0</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-200 pb-2">
+                    <span class="font-medium text-slate-500">Penerima Manfaat:</span>
+                    <span id="impactBeneficiaries" class="font-bold text-slate-900">-</span>
+                </div>
+                <div>
+                    <span class="block font-medium text-slate-500 mb-1">Rincian Penyaluran:</span>
+                    <p id="impactDetail" class="text-xs leading-relaxed text-slate-700"></p>
+                </div>
+            </div>
+
+            <button onclick="closeImpactModal()" class="w-full py-3 bg-slate-900 text-white font-bold rounded-xl text-sm">
+                Tutup Laporan
+            </button>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-800">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-brand-500 text-lg"></i>
+        <span id="toastMessage" class="text-xs sm:text-sm font-semibold">Notifikasi</span>
+    </div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script src="assets/js/landing.js"></script>
+</body>
+</html>

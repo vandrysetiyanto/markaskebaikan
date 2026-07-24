@@ -152,18 +152,105 @@ function saveDonor(donor) {
 }
 
 // ============================================
+// COMPLETED CAMPAIGNS & IMPACT DATA
+// ============================================
+
+const completedCampaignsData = [
+    {
+        id: 'c1',
+        title: 'Renovasi Madrasah Ambruk di Sukabumi',
+        quote: '120 Santri kini dapat belajar dengan tenang tanpa rasa takut atap bocor atau bangunan roboh.',
+        image: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=1000&auto=format&fit=crop',
+        collected: 95000000,
+        target: 95000000,
+        beneficiaries: '120 Santri',
+        detail: 'Bangunan madrasah selesai diresmikan pada bulan lalu lengkap dengan meja belajar, papan tulis, dan perlengkapan kelas baru.'
+    },
+    {
+        id: 'c2',
+        title: 'Program Orang Tua Asuh: Beasiswa 30 Siswa SMA',
+        quote: '30 Siswa dhuafa berhasil menyelesaikan pendidikan jenjang SMA dan mendapatkan sertifikasi pelatihan kerja.',
+        image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1000&auto=format&fit=crop',
+        collected: 61200000,
+        target: 60000000,
+        beneficiaries: '30 Siswa SMA',
+        detail: 'Seluruh biaya SPP, buku, dan ujian akhir 30 siswa dhuafa telah dilunasi 100% hingga mereka lulus.'
+    }
+];
+
+// ============================================
 // RENDER CAMPAIGNS ON LANDING PAGE
 // ============================================
+
+var currentFilterCategory = 'all';
+var showAllCampaignsState = false;
+var CAMPAIGNS_PER_PAGE = 6;
+
+function filterCampaigns(category) {
+    currentFilterCategory = category;
+    
+    // Update active tab styles
+    var buttons = document.querySelectorAll('.campaign-filter-btn');
+    buttons.forEach(function(btn) {
+        var cat = btn.getAttribute('data-category');
+        if (cat === category) {
+            btn.className = 'campaign-filter-btn px-4 py-2 rounded-full text-xs font-bold transition bg-brand-600 text-white shadow-sm border border-brand-600';
+        } else {
+            btn.className = 'campaign-filter-btn px-4 py-2 rounded-full text-xs font-bold transition bg-white text-slate-600 hover:bg-slate-50 border border-slate-200';
+        }
+    });
+
+    renderCampaigns();
+}
+
+function toggleShowAllCampaigns() {
+    showAllCampaignsState = !showAllCampaignsState;
+    var loadMoreText = document.getElementById('loadMoreText');
+    var loadMoreIcon = document.getElementById('loadMoreIcon');
+    if (loadMoreText && loadMoreIcon) {
+        if (showAllCampaignsState) {
+            loadMoreText.innerText = 'Tampilkan Lebih Sedikit';
+            loadMoreIcon.classList.add('rotate-180');
+        } else {
+            loadMoreText.innerText = 'Lihat Selengkapnya';
+            loadMoreIcon.classList.remove('rotate-180');
+        }
+    }
+    renderCampaigns();
+}
 
 function renderCampaigns() {
     var container = document.getElementById('campaignListContainer');
     if (!container) return;
-    if (campaignsData.length === 0) {
-        container.innerHTML = '<div class="col-span-full text-center py-12 text-slate-500">Belum ada kampanye aktif saat ini.</div>';
+    
+    recalcPendingFromDonors();
+
+    // Filter campaigns based on current filter category
+    var filtered = campaignsData.filter(function(c) {
+        if (currentFilterCategory === 'all') return true;
+        return c.category.toLowerCase() === currentFilterCategory.toLowerCase();
+    });
+
+    if (filtered.length === 0) {
+        container.innerHTML = '<div class="col-span-full text-center py-12 text-slate-500">Belum ada kampanye untuk kategori ini.</div>';
+        var loadMoreContainer = document.getElementById('loadMoreContainer');
+        if (loadMoreContainer) loadMoreContainer.classList.add('hidden');
         return;
     }
-    recalcPendingFromDonors();
-    container.innerHTML = campaignsData.map(function(c) {
+
+    // Limit campaigns to display
+    var displayCampaigns = filtered;
+    var loadMoreContainer = document.getElementById('loadMoreContainer');
+    if (filtered.length > CAMPAIGNS_PER_PAGE) {
+        if (loadMoreContainer) loadMoreContainer.classList.remove('hidden');
+        if (!showAllCampaignsState) {
+            displayCampaigns = filtered.slice(0, CAMPAIGNS_PER_PAGE);
+        }
+    } else {
+        if (loadMoreContainer) loadMoreContainer.classList.add('hidden');
+    }
+
+    container.innerHTML = displayCampaigns.map(function(c) {
         var percent = Math.min(100, Math.round((c.collected / c.target) * 100));
         var safeTitle = sanitizeHTML(c.title);
         var safeCategory = sanitizeHTML(c.category);
@@ -172,6 +259,52 @@ function renderCampaigns() {
             ? '<div class="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-2 text-xs flex items-center gap-2"><i class="fa-solid fa-clock text-amber-600"></i><span class="text-amber-800">' + formatRupiah(c.pendingCollected) + ' <strong>menunggu konfirmasi</strong> admin. Jika disetujui, jumlah masuk ke progress bar.</span></div>'
             : '';
         return '<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col"><div class="relative h-48 overflow-hidden"><img src="' + imageSrc + '" alt="' + safeTitle + '" class="w-full h-full object-cover" loading="lazy" onerror="this.src=\'https://placehold.co/600x400/10b981/ffffff?text=Markas+Kebaikan\'"></div><div class="p-5 flex flex-col flex-1"><p class="text-xs uppercase tracking-wider text-brand-600 font-semibold mb-1">' + safeCategory + '</p><h3 class="text-base font-bold text-slate-900 mb-2 line-clamp-2 min-h-[3em]">' + safeTitle + '</h3>' + pendingInfo + '<div class="mt-auto"><div class="w-full bg-slate-100 rounded-full h-2.5 mb-2 overflow-hidden"><div class="bg-brand-600 h-2.5 rounded-full" style="width: ' + percent + '%"></div></div><div class="flex justify-between text-xs font-bold mb-3"><span class="text-brand-600">' + formatRupiah(c.collected) + '</span><span class="text-slate-400">Target: ' + formatRupiah(c.target) + '</span></div><div class="flex items-center justify-between text-xs text-slate-500 mb-4"><span><i class="fa-regular fa-clock mr-1"></i> ' + c.daysLeft + ' hari lagi</span><span class="font-semibold">' + percent + '%</span></div><button onclick="openDonationModal(\'' + c.id + '\')" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold text-sm shadow transition"><i class="fa-solid fa-hand-holding-heart mr-2"></i> Bantu Sekarang</button></div></div></div>';
+    }).join('');
+}
+
+function renderCompletedCampaigns() {
+    var container = document.getElementById('completedCampaignListContainer');
+    if (!container) return;
+    if (completedCampaignsData.length === 0) {
+        container.innerHTML = '<div class="col-span-full text-center py-12 text-slate-400">Belum ada program selesai terdokumentasi.</div>';
+        return;
+    }
+    container.innerHTML = completedCampaignsData.map(function(c) {
+        var safeTitle = sanitizeHTML(c.title);
+        var safeQuote = sanitizeHTML(c.quote);
+        var safeBeneficiaries = sanitizeHTML(c.beneficiaries);
+        var safeDetail = sanitizeHTML(c.detail);
+        var imageSrc = c.image || 'https://placehold.co/600x400/10b981/ffffff?text=Markas+Kebaikan';
+        
+        return '<div class="bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-700/80 flex flex-col justify-between">' +
+            '<div>' +
+                '<div class="relative h-56 overflow-hidden">' +
+                    '<img src="' + imageSrc + '" alt="' + safeTitle + '" class="w-full h-full object-cover" loading="lazy">' +
+                    '<div class="absolute top-4 left-4">' +
+                        '<span class="bg-emerald-500 text-slate-950 font-bold text-xs px-3 py-1.5 rounded-full shadow-lg">' +
+                            '<i class="fa-solid fa-circle-check mr-1"></i> 100% SELESAI & TERDISTRIBUSI' +
+                        '</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="p-6">' +
+                    '<h3 class="text-xl font-bold text-white mb-3">' + safeTitle + '</h3>' +
+                    '<p class="text-slate-300 text-sm mb-4 leading-relaxed">*' + safeQuote + '*</p>' +
+                    '<div class="w-full bg-slate-700 rounded-full h-2.5 mb-2">' +
+                        '<div class="bg-emerald-500 h-2.5 rounded-full w-full"></div>' +
+                    '</div>' +
+                    '<div class="flex justify-between text-xs text-slate-400 font-medium mb-4">' +
+                        '<span class="text-emerald-400 font-bold">Terkumpul: ' + formatRupiah(c.collected) + '</span>' +
+                        '<span>Target: ' + formatRupiah(c.target) + '</span>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="p-6 pt-0">' +
+                '<button onclick="openImpactModal(\'' + safeTitle + '\', \'' + formatRupiah(c.collected) + '\', \'' + safeBeneficiaries + '\', \'' + safeDetail + '\')" ' +
+                        'class="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold text-sm rounded-xl transition text-center">' +
+                    '<i class="fa-regular fa-file-lines mr-2"></i> Lihat Laporan Implementasi' +
+                '</button>' +
+            '</div>' +
+        '</div>';
     }).join('');
 }
 
@@ -644,5 +777,6 @@ function closeImpactModal() {
 (function init() {
     loadCampaignsFromStorage();
     renderCampaigns();
+    renderCompletedCampaigns();
     renderHeroProgramCards();
 })();

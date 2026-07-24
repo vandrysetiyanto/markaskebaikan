@@ -10,31 +10,37 @@
 ```
 markaskebaikan/
 │
-├── index.html                      # Landing page publik
-├── admin/
-│   ├── login.html                  # Login admin (sebelumnya admin-login.html)
-│   └── dashboard.html              # Dashboard admin (sebelumnya admin.html)
+├── index.html                        # Landing page publik
+├── styles.css                        # CSS kustom (satu file, dipakai landing & admin)
+│
+├── admin/                            # Halaman panel admin
+│   ├── index.html                    # Dashboard admin (sebelumnya di root)
+│   ├── login.html                    # Login admin (sebelumnya admin-login.html)
+│   └── js/
+│       └── admin-panel.js            # Script admin panel
 │
 ├── assets/
-│   ├── img/                        # Gambar statis
-│   │   ├── logo.svg
-│   │   └── MK.ico
-│   └── js/                         # JavaScript terpisah per halaman
-│       ├── landing.js              # Script untuk index.html
-│       └── admin.js                # Script untuk admin/
+│   ├── js/
+│   │   └── landing.js                # Script untuk index.html
+│   ├── Logo MK black.png
+│   ├── MARKASKEBAIKAN.png
+│   ├── MK.ico
+│   ├── logo.svg
+│   └── .gitkeep
 │
-├── css/
-│   └── styles.css                  # Semua CSS kustom (satu file)
+├── archive/                          # Backup file struktur lama
+│   ├── admin.html
+│   ├── admin-login.html
+│   └── admin-panel.js
 │
 ├── docs/
-│   ├── scoring.md                  # QC/QA scoring 10 dimensi (72/100)
-│   └── structure.md                # File ini — dokumentasi arsitektur
+│   ├── analisa-landingpage-mk.md
+│   ├── implementation-plan-critical.md
+│   ├── scoring.md
+│   ├── scoring-report.md
+│   └── structure.md                  # File ini — dokumentasi arsitektur
 │
-├── README.md                       # Informasi project
-└── assets/                         # Backup gambar (jika ada yang reference path lama)
-    ├── .gitkeep
-    ├── logo.svg
-    └── MK.ico
+└── README.md
 ```
 
 ---

@@ -194,15 +194,17 @@ function openDonationModal(campaignId, source, programName) {
     var sourceBadge = document.getElementById('donationSourceBadge');
     var sourceInfo = document.getElementById('donationSourceInfo');
     var headerDivider = document.getElementById('donationHeaderDivider');
-    if (source === 'program' && programName) {
-        sourceBadge.innerHTML = '<span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2.5 py-1 rounded-md"><i class="fa-solid fa-star mr-1"></i> PROGRAM UNGGULAN</span>';
-        sourceInfo.innerHTML = '<div class="flex items-center gap-2 text-sm"><i class="fa-solid fa-arrow-right text-brand-600"></i><span class="text-slate-600">Donasi melalui program <strong class="text-slate-900">' + programName + '</strong></span></div>';
-        sourceInfo.classList.remove('hidden');
-        headerDivider.classList.remove('hidden');
-    } else {
-        sourceBadge.innerHTML = '<span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Formulir Sedekah</span>';
-        sourceInfo.classList.add('hidden');
-        headerDivider.classList.add('hidden');
+    if (sourceBadge && sourceInfo && headerDivider) {
+        if (source === 'program' && programName) {
+            sourceBadge.innerHTML = '<span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2.5 py-1 rounded-md"><i class="fa-solid fa-star mr-1"></i> PROGRAM UNGGULAN</span>';
+            sourceInfo.innerHTML = '<div class="flex items-center gap-2 text-sm"><i class="fa-solid fa-arrow-right text-brand-600"></i><span class="text-slate-600">Donasi melalui program <strong class="text-slate-900">' + programName + '</strong></span></div>';
+            sourceInfo.classList.remove('hidden');
+            headerDivider.classList.remove('hidden');
+        } else {
+            sourceBadge.innerHTML = '<span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-md uppercase tracking-wider">Formulir Sedekah</span>';
+            sourceInfo.classList.add('hidden');
+            headerDivider.classList.add('hidden');
+        }
     }
 
     document.getElementById('donationModal').classList.remove('hidden');

@@ -551,7 +551,6 @@ function renderAdminCampaignList() {
     }).join('');
     count.innerText = campaignsData.length;
 }
->>>>+
 
 function resetAdminForm() {
     var form = document.getElementById('adminCampaignForm');
@@ -755,12 +754,8 @@ function processDonation(event) {
     if (!/^\d{6,20}$/.test(phone.replace(/[^0-9]/g, ''))) { showToast('Nomor WhatsApp tidak valid.', true); return; }
     var safeName = sanitizeHTML(name);
     var safePrayer = sanitizeHTML(prayer);
-    var paymentInfo = '';
-    var paymentLabel = '';
-    if (payment === 'qris') { paymentLabel = 'QRIS'; paymentInfo = 'Scan QRIS berikut menggunakan GoPay, OVO, ShopeePay, atau Dana'; }
-    else if (payment === 'bca') { paymentLabel = 'BCA Virtual Account'; paymentInfo = 'Transfer ke Virtual Account BCA: 8888 1234 5678 90 a.n. Yayasan Markas Kebaikan'; }
-    else if (payment === 'mandiri') { paymentLabel = 'Mandiri Virtual Account'; paymentInfo = 'Transfer ke Virtual Account Mandiri: 9999 1234 5678 90 a.n. Yayasan Markas Kebaikan'; }
-    else { paymentLabel = 'BSI Virtual Account'; paymentInfo = 'Transfer ke Virtual Account BSI: 7777 1234 5678 90 a.n. Yayasan Markas Kebaikan'; }
+    var paymentLabel = 'Transfer BCA';
+    var paymentInfo = 'Transfer ke BCA: 5310751911 a.n. Tomi Irawan';
     var donorId = 'DON-' + Date.now() + '-' + Math.floor(Math.random() * 10000);
     var donorData = {
         id: donorId,

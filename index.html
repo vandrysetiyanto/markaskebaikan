@@ -461,7 +461,7 @@
                     </div>
                     <h3 class="text-lg font-bold text-slate-900 mb-2">Transfer Kemudahan</h3>
                     <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                        Bayar instant via QRIS, GoPay, OVO, ShopeePay, atau Bank Transfer.
+                        Transfer ke rekening BCA 5310751911 a.n. Tomi Irawan.
                     </p>
                 </div>
 
@@ -650,11 +650,8 @@
                 <p>© 2026 Markas Kebaikan. All Rights Reserved.</p>
                 <div class="flex items-center gap-3 text-slate-500">
                     <span>Metode Pembayaran:</span>
-                    <span class="bg-slate-800 px-2 py-1 rounded text-white font-bold">QRIS</span>
-                    <span class="bg-slate-800 px-2 py-1 rounded text-white font-bold">GOPAY</span>
-                    <span class="bg-slate-800 px-2 py-1 rounded text-white font-bold">OVO</span>
                     <span class="bg-slate-800 px-2 py-1 rounded text-white font-bold">BCA</span>
-                    <span class="bg-slate-800 px-2 py-1 rounded text-white font-bold">MANDIRI</span>
+                    <span class="text-xs text-slate-500">5310751911 a.n. Tomi Irawan</span>
                 </div>
             </div>
         </div>
@@ -790,12 +787,10 @@
                         <!-- Payment Method Select -->
                         <div class="mb-4">
                             <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Metode Pembayaran</label>
-                            <select id="progPaymentMethod" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-brand-500 focus:outline-none bg-slate-50">
-                                <option value="qris">Instant QRIS (GoPay, OVO, ShopeePay, Dana)</option>
-                                <option value="bca">Virtual Account BCA</option>
-                                <option value="mandiri">Virtual Account Mandiri</option>
-                                <option value="bsi">Virtual Account BSI</option>
-                            </select>
+                            <div id="progPaymentMethod" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold bg-slate-50 text-slate-700">
+                                Transfer BCA — <span class="font-bold">5310751911</span> a.n. <span class="font-bold">Tomi Irawan</span>
+                            </div>
+                            <input type="hidden" id="progPaymentMethodValue" value="bca">
                         </div>
 
                         <!-- Submit CTA -->
@@ -876,12 +871,10 @@
                 <!-- Payment Method Select -->
                 <div class="mb-6">
                     <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Metode Pembayaran</label>
-                    <select id="paymentMethod" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-brand-500 focus:outline-none bg-slate-50">
-                        <option value="qris">Instant QRIS (GoPay, OVO, ShopeePay, Dana)</option>
-                        <option value="bca">Virtual Account BCA</option>
-                        <option value="mandiri">Virtual Account Mandiri</option>
-                        <option value="bsi">Virtual Account BSI</option>
-                    </select>
+                    <div class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold bg-slate-50 text-slate-700">
+                        Transfer BCA — <span class="font-bold">5310751911</span> a.n. <span class="font-bold">Tomi Irawan</span>
+                    </div>
+                    <input type="hidden" id="paymentMethod" value="bca">
                 </div>
 
                 <!-- Submit CTA -->

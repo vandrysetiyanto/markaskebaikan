@@ -9,7 +9,7 @@ export class OllamaClient {
   constructor({ endpoint = DEFAULTS.endpoint, model = DEFAULTS.model, fetchFn = fetch } = {}) {
     this.endpoint = endpoint.replace(/\/+$/, "");
     this.model = model;
-    this.fetchFn = fetchFn;
+    this.fetchFn = fetchFn.bind(globalThis);
     this.systemPrompt = aiContext;
   }
 

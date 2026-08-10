@@ -99,6 +99,20 @@ describe("OllamaClient", () => {
     const result = await client.send(session);
     expect(result.error).toBe("cancelled");
   });
+
+  it("calls fetchFn with the global receiver (no Illegal invocation)", async () => {
+    const receivers = [];
+    function spyFetch() {
+      receivers.push(this);
+      return { ok: true, json: async () => ({ models: [] }), body: null };
+    }
+    const client = new OllamaClient({ fetchFn: spyFetch });
+    await client.listModels();
+    await client.isModelAvailable();
+    expect(receivers).toHaveLength(2);
+    expect(receivers[0]).toBe(globalThis);
+    expect(receivers[1]).toBe(globalThis);
+  });
 });
 
 describe("ChatSession", () => {

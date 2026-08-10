@@ -543,13 +543,14 @@ ul { padding: 0; margin: 0; list-style: none; }
 .card-target { color: var(--muted); font-size: 13px; }
 .card-meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 13px; margin: 0 0 16px; }
 .card-meta .days-left { color: var(--amber); font-weight: 700; }
-.card-actions { display: flex; align-items: center; gap: 10px; margin-top: auto; }
-.card-actions .btn-primary { flex: 1; padding: 12px 16px; }
+.card-actions { display: flex; align-items: stretch; gap: 10px; margin-top: auto; }
+.card-actions .btn-primary { flex: 1; min-width: 0; padding: 12px 16px; }
 .card-share {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 14px;
+  justify-content: center;
+  width: 42px;
+  padding: 0;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
   background: transparent;
@@ -558,13 +559,14 @@ ul { padding: 0; margin: 0; list-style: none; }
   font-weight: 600;
   font-size: 13.5px;
   cursor: pointer;
-  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.15s var(--ease);
 }
+.card-share span { display: none; }
 .card-share:hover { border-color: var(--primary); color: var(--primary-strong); background: var(--primary-soft); }
 .reward-card.share-highlight { animation: share-pulse 2.4s var(--ease); }
-.program-actions { display: flex; align-items: center; gap: 10px; }
-.program-actions .btn-primary { flex: 1; }
+.program-actions { display: flex; align-items: stretch; gap: 10px; }
+.program-actions .btn-primary { flex: 1; min-width: 0; white-space: normal; }
 @keyframes share-pulse {
   0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.45); border-color: var(--primary); }
   60% { box-shadow: 0 0 0 18px rgba(13, 148, 136, 0); }

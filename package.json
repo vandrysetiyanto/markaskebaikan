@@ -1,0 +1,23 @@
+{
+  "name": "crowdlaunch",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Crowdfunding landing page theme with a local AI campaign chatbot (Ollama)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.0",
+    "vite": "^6.0.0",
+    "vitest": "^3.0.0"
+  },
+  "dependencies": {
+    "idn-finlogos": "^2.5.0",
+    "lucide": "^1.31.0"
+  }
+}

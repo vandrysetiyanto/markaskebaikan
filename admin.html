@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Admin — Markas Kebaikan</title>
+    <link rel="icon" href="/mk.ico" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    </noscript>
+    <link rel="stylesheet" href="/src/admin.css" />
+  </head>
+  <body>
+    <div class="admin-login" id="admin-login" hidden>
+      <form class="login-card" id="login-form" novalidate>
+        <div class="login-brand">
+          <img class="brand-mark" src="/logo.svg" width="24" height="24" alt="Markas Kebaikan" />
+          <span>Markas Kebaikan</span>
+        </div>
+        <h1>Masuk Admin</h1>
+        <p>Panel pengelolaan kampanye &amp; donasi.</p>
+        <label class="field" for="login-user">
+          <span>Username</span>
+          <input id="login-user" type="text" autocomplete="username" required />
+        </label>
+        <label class="field" for="login-pass">
+          <span>Password</span>
+          <input id="login-pass" type="password" autocomplete="current-password" required />
+        </label>
+        <p class="form-error" id="login-error" hidden>Username atau password salah.</p>
+        <p class="login-hint">Demo: <code>admin</code> / <code>markaskebaikan123</code></p>
+        <button class="btn btn-primary btn-block" type="submit">Masuk</button>
+        <a class="login-back" href="./index.html">← Kembali ke situs</a>
+      </form>
+    </div>
+
+    <div class="admin-app" id="admin-app" hidden>
+      <header class="admin-header">
+        <div class="admin-header-inner">
+          <div class="admin-brand">
+            <img class="brand-mark" src="/logo.svg" width="22" height="22" alt="Markas Kebaikan" />
+            <span>Markas Kebaikan</span>
+          </div>
+          <nav class="admin-tabs" id="admin-tabs" aria-label="Navigasi admin">
+            <button class="admin-tab active" type="button" data-tab="dashboard">Ringkasan</button>
+            <button class="admin-tab" type="button" data-tab="campaigns">Kampanye</button>
+            <button class="admin-tab" type="button" data-tab="donors">Donasi <span class="tab-badge" id="badge-donors"></span></button>
+            <button class="admin-tab" type="button" data-tab="programs">Donasi Program <span class="tab-badge" id="badge-programs"></span></button>
+            <button class="admin-tab" type="button" data-tab="settings">Pengaturan</button>
+          </nav>
+          <div class="admin-header-actions">
+            <a class="btn btn-ghost btn-sm" href="./index.html">Lihat Situs</a>
+            <button class="btn btn-danger-ghost btn-sm" id="logout-btn" type="button">Keluar</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="admin-main">
+        <section class="admin-pane active" id="pane-dashboard">
+          <h1>Ringkasan</h1>
+          <div class="dash-stats" id="dash-stats"></div>
+          <div class="dash-grid">
+            <div class="card">
+              <h2>Kampanye Aktif</h2>
+              <div id="dash-campaigns"></div>
+            </div>
+            <div class="card">
+              <h2>Donasi Terbaru</h2>
+              <div id="dash-recent"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-pane" id="pane-campaigns">
+          <div class="pane-head">
+            <div>
+              <h1>Kampanye</h1>
+              <p>Kelola kampanye yang tampil di halaman utama.</p>
+            </div>
+            <button class="btn btn-primary" id="add-campaign-btn" type="button">+ Tambah Kampanye</button>
+          </div>
+          <div class="card">
+            <div class="table-scroll">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Kampanye</th><th>Kategori</th><th>Target</th><th>Terkumpul</th><th>Sisa Hari</th><th>Status</th><th>Aksi</th></tr>
+                </thead>
+                <tbody id="campaigns-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-pane" id="pane-donors">
+          <div class="pane-head">
+            <div>
+              <h1>Donasi</h1>
+              <p>Konfirmasi donasi dari halaman utama.</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-ghost btn-sm" id="export-donors-csv" type="button">Export CSV</button>
+              <button class="btn btn-ghost btn-sm" id="export-donors-xls" type="button">Export XLS</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="table-tools">
+              <input class="tool-search" id="donors-search" type="search" placeholder="Cari nama, kontak, ref, jumlah…" />
+              <select class="tool-status" id="donors-status" aria-label="Filter status">
+                <option value="">Semua status</option>
+                <option value="pending">Menunggu</option>
+                <option value="confirmed">Terkonfirmasi</option>
+              </select>
+              <span class="table-count" id="donors-count"></span>
+            </div>
+            <div class="table-scroll">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Waktu</th><th>Donatur</th><th>Kontak</th><th>Jumlah</th><th>Kampanye</th><th>Metode</th><th>Ref</th><th>Bukti</th><th>Status</th><th>Aksi</th></tr>
+                </thead>
+                <tbody id="donors-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-pane" id="pane-programs">
+          <div class="pane-head">
+            <div>
+              <h1>Donasi Program</h1>
+              <p>Donasi yang dialokasikan ke program unggulan.</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-ghost btn-sm" id="export-programs-csv" type="button">Export CSV</button>
+              <button class="btn btn-ghost btn-sm" id="export-programs-xls" type="button">Export XLS</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="table-tools">
+              <input class="tool-search" id="programs-search" type="search" placeholder="Cari nama, program, ref, jumlah…" />
+              <select class="tool-status" id="programs-status" aria-label="Filter status">
+                <option value="">Semua status</option>
+                <option value="pending">Menunggu</option>
+                <option value="confirmed">Terkonfirmasi</option>
+              </select>
+              <span class="table-count" id="programs-count"></span>
+            </div>
+            <div class="table-scroll">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Waktu</th><th>Donatur</th><th>Program</th><th>Jumlah</th><th>Metode</th><th>Ref</th><th>Bukti</th><th>Status</th><th>Aksi</th></tr>
+                </thead>
+                <tbody id="programs-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <section class="admin-pane" id="pane-settings">
+          <div class="pane-head">
+            <div>
+              <h1>Pengaturan</h1>
+              <p>Kelola metode pembayaran yang tersedia untuk donatur.</p>
+            </div>
+            <button class="btn btn-primary" id="add-payment-btn" type="button">+ Tambah Metode</button>
+          </div>
+          <div class="card">
+            <div class="table-scroll">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Metode</th><th>Jenis</th><th>Catatan</th><th>Detail VA</th><th>Status</th><th>Aksi</th></tr>
+                </thead>
+                <tbody id="payments-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog class="admin-modal" id="campaign-modal">
+      <form class="admin-modal-card" id="campaign-form">
+        <div class="modal-head">
+          <h3 id="campaign-modal-title">Tambah Kampanye</h3>
+          <button class="modal-close" id="campaign-cancel" type="button" aria-label="Tutup">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <label class="field" for="f-title">
+          <span>Judul Kampanye</span>
+          <input id="f-title" type="text" required />
+        </label>
+        <label class="field" for="f-category">
+          <span>Kategori</span>
+          <select id="f-category"></select>
+        </label>
+        <label class="field" for="f-image">
+          <span>Gambar Cover (URL)</span>
+          <input id="f-image" type="url" placeholder="https://…" />
+        </label>
+        <div class="form-grid">
+          <label class="field" for="f-target">
+            <span>Target Dana (Rp)</span>
+            <input id="f-target" type="number" min="1" step="1000" required />
+          </label>
+          <label class="field" for="f-collected">
+            <span>Dana Terkumpul (Rp)</span>
+            <input id="f-collected" type="number" min="0" step="1000" value="0" />
+          </label>
+        </div>
+        <label class="field" for="f-days">
+          <span>Sisa Hari</span>
+          <input id="f-days" type="number" min="0" step="1" required />
+        </label>
+        <p class="form-error" id="campaign-error" hidden></p>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" id="campaign-cancel-2" type="button">Batal</button>
+          <button class="btn btn-primary" type="submit">Simpan</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="admin-modal" id="payment-modal">
+      <form class="admin-modal-card" id="payment-form">
+        <div class="modal-head">
+          <h3 id="payment-modal-title">Tambah Metode Pembayaran</h3>
+          <button class="modal-close" id="payment-cancel" type="button" aria-label="Tutup">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <label class="field" for="pm-label">
+          <span>Nama Metode</span>
+          <input id="pm-label" type="text" required placeholder="Contoh: BRI VA" />
+        </label>
+        <label class="field" for="pm-kind">
+          <span>Jenis</span>
+          <select id="pm-kind">
+            <option value="qris">QRIS / E-Wallet</option>
+            <option value="va">Virtual Account (VA)</option>
+          </select>
+        </label>
+        <label class="field" for="pm-brand">
+          <span>Logo <span style="color:var(--muted);font-weight:400">(opsional)</span></span>
+          <span class="brand-picker">
+            <select id="pm-brand"></select>
+            <span class="brand-preview" id="pm-brand-preview"></span>
+          </span>
+        </label>
+        <label class="field" for="pm-note">
+          <span>Catatan <span style="color:var(--muted);font-weight:400">(opsional)</span></span>
+          <input id="pm-note" type="text" placeholder="Contoh: Semua E-Wallet" />
+        </label>
+        <div id="pm-va-fields">
+          <label class="field" for="pm-vaname">
+            <span>Nama Rekening (VA)</span>
+            <input id="pm-vaname" type="text" placeholder="Yayasan Markas Kebaikan" />
+          </label>
+          <label class="field" for="pm-vanumber">
+            <span>Nomor VA</span>
+            <input id="pm-vanumber" type="text" placeholder="8899 0077 5511 0001" />
+          </label>
+        </div>
+        <label class="field check-field">
+          <span>
+            <input id="pm-enabled" type="checkbox" checked />
+            Tampil aktif di halaman donasi
+          </span>
+        </label>
+        <p class="form-error" id="payment-error" hidden></p>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" id="payment-cancel-2" type="button">Batal</button>
+          <button class="btn btn-primary" type="submit">Simpan</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="proof-dialog" id="proof-modal">
+      <div class="proof-dialog-inner">
+        <button class="modal-close" id="proof-close" type="button" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <img id="proof-img" alt="Bukti transfer" />
+        <p class="proof-caption" id="proof-caption"></p>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="/src/admin.js"></script>
+  </body>
+</html>

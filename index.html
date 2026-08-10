@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Markas Kebaikan — platform sedekah & penggalangan dana sosial yang transparan, mudah, dan berdampak nyata. Donasi mulai dari Rp 10.000." />
+    <meta name="theme-color" content="#F8FAFC" />
+    <title>Markas Kebaikan — Sedekah Mudah, Transparan, Berdampak Nyata</title>
+    <link rel="icon" href="/mk.ico" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    </noscript>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <!--
+      THESIS: One warm, trustworthy surface that makes giving feel as easy as paying for
+              coffee; it refuses the dark neon "campaign" template and the metric-scrum hero.
+      OWN-WORLD: slate paper (#F8FAFC) with white cards on 1px hairlines, one teal accent
+              (#0D9488) for every action, amber (#D97706) reserved for warmth and highlights;
+              Plus Jakarta Sans display over an Inter body; flat at rest, elevation on hover.
+      STORY: a first-time visitor understands what Markas Kebaikan is, sees living proof
+              (impact counters, active campaigns with live progress), and donates in under
+              30 seconds through a 3-step modal without an account.
+      FIRST VIEWPORT: left column headline + one-line promise + "Sedekah Sekarang" action and
+              trust chips; right column a warm ripple art showing giving spreading outward.
+      FORM: user-pinned "light & airy modern" refinement; PRD-pinned palette and type
+              (teal/amber/slate, Plus Jakarta Sans); code-led.
+      FINISH: unreviewed and undocumented is unfinished; this build ends with the finish
+              review, the verdict, and DESIGN.md
+    -->
+    <a class="skip-link" href="#main">Lewati ke konten</a>
+
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="#top">
+          <img class="brand-mark" src="/logo.svg" width="22" height="22" alt="Markas Kebaikan" />
+          <span class="brand-name" id="brand-name">Markas Kebaikan</span>
+        </a>
+        <nav class="nav-links" aria-label="Navigasi utama">
+          <a href="#program">Program</a>
+          <a href="#kampanye">Kampanye</a>
+          <a href="#transparansi">Transparansi</a>
+          <a href="#tentang">Tentang Kami</a>
+          <a href="#tentang" data-open-status>Cek Status</a>
+        </nav>
+        <div class="nav-actions">
+          <span class="nav-fund" id="nav-fund">45.000+ dermawan</span>
+          <button class="btn btn-primary btn-sm" id="nav-back-btn" type="button">Sedekah Sekarang</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero-orb-layer" data-parallax="0.6" aria-hidden="true">
+          <div class="hero-orb hero-orb-1"></div>
+        </div>
+        <div class="hero-orb-layer" data-parallax="0.4" aria-hidden="true">
+          <div class="hero-orb hero-orb-2"></div>
+        </div>
+        <div class="hero-orb-layer" data-parallax="0.2" aria-hidden="true">
+          <div class="hero-orb hero-orb-3"></div>
+        </div>
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <h1 class="hero-title" id="hero-title">Ubah Uang Cangkir Kopi Jadi Senyum dan Masa Depan Mereka.</h1>
+            <p class="hero-sub" id="hero-sub">Gabung bersama puluhan ribu dermawan muda. Salurkan sedekah secara transparan, mudah, dan berdampak nyata mulai dari Rp 10.000.</p>
+            <div class="hero-cta">
+              <button class="btn btn-primary" type="button" data-donate>Sedekah Sekarang</button>
+              <a class="btn btn-ghost" href="#kampanye">Lihat Program</a>
+            </div>
+            <ul class="hero-trust" id="hero-trust">
+              <li class="trust-item">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                Transparan & Terlapor
+              </li>
+              <li class="trust-item">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M4 21v-1a7 7 0 0 1 14 0v1"/><path d="M17 4.5a4 4 0 0 1 0 7"/></svg>
+                Donasi Tanpa Login
+              </li>
+              <li class="trust-item">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                Mulai dari Rp 10.000
+              </li>
+            </ul>
+          </div>
+          <div class="hero-art" id="hero-art" aria-hidden="true">
+            <div class="ripple-scene">
+              <div class="ripple ripple-1"></div>
+              <div class="ripple ripple-2"></div>
+              <div class="ripple ripple-3"></div>
+              <div class="art-ring">
+                <svg viewBox="0 0 200 200">
+                  <circle class="art-ring-track" cx="100" cy="100" r="84" fill="none" stroke="currentColor" stroke-width="3" />
+                  <circle class="art-ring-progress" cx="100" cy="100" r="84" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-dasharray="527.8" stroke-dashoffset="137.2" />
+                </svg>
+              </div>
+              <div class="art-coin c1">
+                <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" fill="#F59E0B" />
+                  <circle cx="12" cy="12" r="7.4" fill="none" stroke="#FEF3C7" stroke-width="1.6" />
+                  <path d="M10.6 15.6v-7.2h1.9c1.7 0 2.8.9 2.8 2.4 0 1.1-.5 1.9-1.5 2.2l1.7 2.6h-1.5l-1.6-2.5h-.9v2.5h-.9zm.9-3.3h1c.9 0 1.4-.4 1.4-1.2s-.5-1.2-1.4-1.2h-1v2.4z" fill="#fff" />
+                </svg>
+              </div>
+              <div class="art-box">
+                <svg viewBox="0 0 40 44" width="42" height="46" aria-hidden="true">
+                  <path d="M20 5c-2.6-2.8-7.4-1.6-7.4 2.2 0 2.9 2.7 4.7 7.4 7.8 4.7-3.1 7.4-4.9 7.4-7.8 0-3.8-4.8-5-7.4-2.2z" fill="#F59E0B" />
+                  <rect x="4" y="17" width="32" height="23" rx="5" fill="#0D9488" />
+                  <rect x="4" y="17" width="32" height="23" rx="5" fill="none" stroke="#0F766E" stroke-width="1.4" />
+                  <rect x="13" y="13" width="14" height="7" rx="3.5" fill="#0F766E" />
+                  <path d="M20 26c-2-2.2-5.7-1.2-5.7 2 0 2.6 2.4 4.2 5.7 7 3.3-2.8 5.7-4.4 5.7-7 0-3.2-3.7-4.2-5.7-2z" fill="#CCFBF1" />
+                </svg>
+              </div>
+              <div class="ripple-float f1"></div>
+              <div class="ripple-float f2"></div>
+              <div class="ripple-float f3"></div>
+              <div class="ripple-heart">
+                <svg class="art-hands" viewBox="0 0 64 64" width="48" height="48" fill="none" aria-hidden="true">
+                  <path d="M15 38c2.4 3.2 5.6 5 9.5 5s7.1-1.8 9.5-5" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.55" />
+                  <path d="M30 42c2.4 3.2 5.6 5 9.5 5s7.1-1.8 9.5-5" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.55" />
+                  <path d="M23 34.5c2 2.7 4.7 4.2 9 4.2s7-1.5 9-4.2" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" opacity="0.75" />
+                  <path d="M28 30.5c1.4 1.9 3.3 3 6 3s4.6-1.1 6-3" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" />
+                  <path d="M32 18c-3.6-3.9-10.2-2.3-10.2 3.1 0 4 3.7 6.5 10.2 10.9 6.5-4.4 10.2-6.9 10.2-10.9 0-5.4-6.6-7-10.2-3.1z" fill="#FFFFFF" />
+                  <path d="M27.4 19.6a4.4 4.4 0 0 1 4.6-1.2" stroke="#CCFBF1" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-band" id="dampak" aria-label="Ringkasan dampak komunitas">
+        <div class="container stats-row" id="stats-row">
+          <div class="stat">
+            <div class="stat-value stat-accent" data-target="1450000000" data-prefix="Rp " data-suffix="+">Rp 1.450.000.000+</div>
+            <div class="stat-label">Total Dana Tersalurkan</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" data-target="12400" data-prefix="" data-suffix="+">12.400+</div>
+            <div class="stat-label">Penerima Manfaat</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" data-target="180" data-prefix="" data-suffix="+">180+</div>
+            <div class="stat-label">Program Terlaksana</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value" data-target="45000" data-prefix="" data-suffix="+">45.000+</div>
+            <div class="stat-label">Donatur Aktif</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="kampanye">
+        <div class="container">
+          <div class="section-head">
+            <h2>Kampanye Berlangsung</h2>
+            <p>Salurkan donasimu ke kampanye yang paling menyentuh hati.</p>
+          </div>
+          <div class="rewards-grid" id="campaign-grid"></div>
+        </div>
+      </section>
+
+      <section class="section alt" id="program">
+        <div class="container">
+          <div class="section-head">
+            <h2>Program Unggulan</h2>
+            <p>Program berkelanjutan yang bisa kamu dukung rutin.</p>
+          </div>
+          <div class="program-grid" id="program-grid"></div>
+        </div>
+      </section>
+
+      <section class="section" id="transparansi">
+        <div class="container">
+          <div class="section-head">
+            <h2>Transparansi &amp; Kampanye Selesai</h2>
+            <p>Setiap rupiah kamu audit lewat laporan foto dan kuitansi.</p>
+          </div>
+          <div class="completed-grid" id="completed-grid"></div>
+        </div>
+      </section>
+
+      <section class="cta">
+        <div class="container cta-inner">
+          <h2>Jadikan Sedekah Gaya Hidupmu</h2>
+          <p>Gabung bersama 45.000+ dermawan muda. Mulai dari Rp 10.000.</p>
+          <button class="btn btn-onaccent" type="button" data-donate>Sedekah Sekarang</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer" id="tentang">
+      <div class="container footer-grid">
+        <div>
+          <div class="brand">
+            <svg class="brand-mark" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+              <path d="M12 21.2C5.8 16.6 2.6 12.9 2.6 8.7 2.6 4.8 5.6 2 9.1 2c2.2 0 3.8 1.1 4.9 2.6C15.1 3.1 16.7 2 18.9 2 22.4 2 25.4 4.8 25.4 8.7c0 4.2-3.2 7.9-9.4 12.5L12 21.2z"/>
+            </svg>
+            <span class="brand-name" id="footer-brand">Markas Kebaikan</span>
+          </div>
+          <p class="footer-note">Platform sedekah berbasis komunitas. Transparan, tanpa login, dan terlapor tiap rupiahnya.</p>
+        </div>
+        <nav class="footer-links" aria-label="Tautan footer">
+          <a href="#program">Program</a>
+          <a href="#kampanye">Kampanye</a>
+          <a href="#transparansi">Transparansi</a>
+          <a href="#dampak">Dampak</a>
+          <a href="#tentang" data-open-status>Cek Status Donasi</a>
+        </nav>
+        <div class="footer-contact">
+          <p class="footer-contact-label">Hubungi Komunitas</p>
+          <a class="footer-contact-link" href="https://wa.me/6281234567890">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            WhatsApp
+          </a>
+          <a class="footer-contact-link" href="https://instagram.com/markaskebaikan">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.4a4 4 0 1 1-2.8-3.8"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+            Instagram
+          </a>
+          <a class="footer-contact-link" href="mailto:halo@markaskebaikan.id">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m2 7 10 6 10-6"/></svg>
+            halo@markaskebaikan.id
+          </a>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <span>© 2026 Markas Kebaikan. Demo tema PRD.</span>
+        <span><a href="./admin.html">Admin</a> · AI Lokal via Ollama</span>
+      </div>
+    </footer>
+
+    <dialog class="donate-modal" id="donate-modal">
+      <div class="donate-inner">
+        <button class="donate-close" id="donate-close" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <div class="donate-head">
+          <h3 id="donate-title">Donasi Sekarang</h3>
+          <p id="donate-campaign-label"></p>
+        </div>
+        <ol class="donate-steps" id="donate-steps">
+          <li class="active" data-step="1"><span>1</span>Nominal</li>
+          <li data-step="2"><span>2</span>Identitas</li>
+          <li data-step="3"><span>3</span>Pembayaran</li>
+        </ol>
+        <div class="donate-body" id="donate-body"></div>
+      </div>
+    </dialog>
+
+    <dialog class="report-modal" id="report-modal">
+      <div class="report-inner">
+        <button class="report-close" id="report-close" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <h3 id="report-title"></h3>
+        <div class="report-body" id="report-body"></div>
+      </div>
+    </dialog>
+
+    <dialog class="report-modal" id="status-modal">
+      <div class="report-inner">
+        <button class="report-close" id="status-close" aria-label="Tutup">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <h3>Cek Status Donasi</h3>
+        <form id="status-form" class="status-form">
+          <input id="status-ref-input" type="text" placeholder="Masukkan ref donasi, contoh MK-ABCDEF" autocomplete="off" aria-label="Ref donasi" />
+          <button class="btn btn-primary" type="submit">Cek Status</button>
+        </form>
+        <div class="report-body" id="status-result"></div>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

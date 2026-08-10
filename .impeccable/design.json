@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-09T00:00:00.000Z",
+  "title": "Design System: Markas Kebaikan",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Teal",
+        "canonical": "#0D9488",
+        "tonalRamp": ["#134E4A", "#115E59", "#0F766E", "#0D9488", "#14B8A6", "#2DD4BF", "#5EEAD4", "#99F6E4"]
+      },
+      "primary-soft": {
+        "role": "primary",
+        "displayName": "Teal Soft",
+        "canonical": "#CCFBF1",
+        "tonalRamp": ["#99F6E4", "#B0F6E6", "#C0F8EC", "#CCFBF1", "#D6FBF3", "#E2FCF6", "#EFFDFA", "#FFFFFF"]
+      },
+      "amber": {
+        "role": "tertiary",
+        "displayName": "Amber",
+        "canonical": "#D97706",
+        "tonalRamp": ["#78350F", "#92400E", "#B45309", "#D97706", "#F59E0B", "#FBBF24", "#FCD34D", "#FEF3C7"]
+      },
+      "amber-soft": {
+        "role": "tertiary",
+        "displayName": "Amber Soft",
+        "canonical": "#FEF3C7",
+        "tonalRamp": ["#FCD34D", "#FDE68A", "#FEEFC0", "#FEF3C7", "#FFF4D4", "#FFF8E1", "#FFFBF0", "#FFFFFF"]
+      },
+      "paper-soft": {
+        "role": "neutral",
+        "displayName": "Slate 50",
+        "canonical": "#F8FAFC",
+        "tonalRamp": ["#0F172A", "#334155", "#475569", "#64748B", "#94A3B8", "#CBD5E1", "#E2E8F0", "#F1F5F9", "#F8FAFC", "#FFFFFF"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Slate 900",
+        "canonical": "#0F172A",
+        "tonalRamp": ["#020617", "#0F172A", "#1E293B", "#334155", "#475569", "#64748B", "#94A3B8", "#CBD5E1"]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Slate 600",
+        "canonical": "#475569",
+        "tonalRamp": ["#0F172A", "#1E293B", "#334155", "#475569", "#64748B", "#94A3B8", "#CBD5E1", "#E2E8F0"]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Slate 200",
+        "canonical": "#E2E8F0",
+        "tonalRamp": ["#475569", "#64748B", "#94A3B8", "#CBD5E1", "#E2E8F0", "#EEF2F7", "#F1F5F9", "#F8FAFC"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Plus Jakarta Sans Display",
+        "purpose": "Hero headline and section headings, weight 800, balanced."
+      },
+      "body": {
+        "displayName": "Inter Body",
+        "purpose": "Paragraphs and secondary copy, 60–65ch measure."
+      }
+    },
+    "shadows": [
+      { "name": "shadow-sm", "value": "0 1px 2px rgba(15,23,42,0.06)", "purpose": "Sticky nav when scrolled and the funding bar." },
+      { "name": "shadow-md", "value": "0 18px 44px -16px rgba(15,23,42,0.18)", "purpose": "Card hover, chat panel, modal, toast." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Default easing for state transitions and the funding-bar fill." },
+      { "name": "fill-grow", "value": "1.4s cubic-bezier(0.22, 1, 0.36, 1) both", "purpose": "The one authored entrance: funding bars scale in from the left." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "560px" },
+      { "name": "tablet", "value": "900px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single action color; used for Donasi Sekarang, Lanjut, Bayar Sekarang, and chat send.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Donasi Sekarang</button>",
+      "css": ".ds-btn-primary { display:inline-flex; align-items:center; justify-content:center; gap:8px; background:#0D9488; color:#fff; font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif; font-weight:700; font-size:15px; line-height:1.2; padding:13px 26px; border:1px solid transparent; border-radius:999px; cursor:pointer; transition:background-color .15s cubic-bezier(.22,1,.36,1), box-shadow .2s cubic-bezier(.22,1,.36,1), transform .15s cubic-bezier(.22,1,.36,1); } .ds-btn-primary:hover { background:#0F766E; box-shadow:0 10px 24px -10px rgba(13,148,136,.55); } .ds-btn-primary:active { transform:translateY(1px); } .ds-btn-primary:focus-visible { outline:2px solid #0D9488; outline-offset:3px; border-radius:999px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action; hairline border that turns teal on hover.",
+      "html": "<button class=\"ds-btn-ghost\" type=\"button\">Lihat Program</button>",
+      "css": ".ds-btn-ghost { display:inline-flex; align-items:center; justify-content:center; background:transparent; color:#0F172A; font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif; font-weight:700; font-size:15px; line-height:1.2; padding:13px 26px; border:1px solid #CBD5E1; border-radius:999px; cursor:pointer; transition:border-color .15s cubic-bezier(.22,1,.36,1), color .15s cubic-bezier(.22,1,.36,1); } .ds-btn-ghost:hover { border-color:#0D9488; color:#0F766E; } .ds-btn-ghost:focus-visible { outline:2px solid #0D9488; outline-offset:3px; }"
+    },
+    {
+      "name": "Preset Amount Tile",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Donation amount preset; soft fill that fills teal once selected.",
+      "html": "<button class=\"ds-chip\" type=\"button\">Rp 25.000</button>",
+      "css": ".ds-chip { background:#F1F5F9; border:1.5px solid #E2E8F0; color:#0F172A; font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif; font-weight:700; font-size:15px; padding:14px; border-radius:10px; cursor:pointer; transition:border-color .15s cubic-bezier(.22,1,.36,1), background-color .15s cubic-bezier(.22,1,.36,1), color .15s cubic-bezier(.22,1,.36,1); } .ds-chip:hover { border-color:#0D9488; } .ds-chip.selected { background:#0D9488; border-color:#0D9488; color:#fff; }"
+    },
+    {
+      "name": "Campaign Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "White card with a gradient cover glyph, funding bar, and the single action.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-cover\"></div><h3>Beasiswa Anak Yatim & Dhuafa</h3><div class=\"ds-track\"><div class=\"ds-fill\" style=\"width:75%\"></div></div></article>",
+      "css": ".ds-card { position:relative; background:#ffffff; border:1px solid #E2E8F0; border-radius:16px; overflow:hidden; display:flex; flex-direction:column; transition:transform .18s cubic-bezier(.22,1,.36,1), box-shadow .22s cubic-bezier(.22,1,.36,1), border-color .18s cubic-bezier(.22,1,.36,1); } .ds-card:hover { transform:translateY(-3px); box-shadow:0 18px 44px -16px rgba(15,23,42,.18); } .ds-cover { aspect-ratio:16/9; background:linear-gradient(140deg,#0D9488,#134E4A); } .ds-card h3 { font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif; font-size:18px; font-weight:700; letter-spacing:-.02em; line-height:1.3; margin:0 0 14px; } .ds-track { height:8px; border-radius:999px; background:#F1F5F9; overflow:hidden; } .ds-fill { height:100%; border-radius:999px; background:#0D9488; }"
+    },
+    {
+      "name": "Pay Method Tile",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Payment-method option in step 3; white icon tile in a soft field.",
+      "html": "<button class=\"ds-pay\" type=\"button\"><span class=\"ds-pay-icon\">QRIS</span><span>QRIS</span></button>",
+      "css": ".ds-pay { display:flex; align-items:center; gap:12px; background:#F1F5F9; border:1.5px solid #E2E8F0; border-radius:10px; padding:13px 14px; cursor:pointer; font:inherit; text-align:left; transition:border-color .15s cubic-bezier(.22,1,.36,1), background-color .15s cubic-bezier(.22,1,.36,1); } .ds-pay:hover { border-color:#0D9488; } .ds-pay.selected { border-color:#0D9488; background:#CCFBF1; } .ds-pay-icon { width:34px; height:34px; border-radius:9px; display:grid; place-items:center; background:#fff; border:1px solid #E2E8F0; color:#0D9488; }"
+    },
+    {
+      "name": "Nav",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Fixed white bar on a hairline; teal heart mark; shadow-sm once scrolled.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-brand\"><span class=\"ds-nav-mark\"></span>Markas Kebaikan</a><a href=\"#\">Program</a><a href=\"#\">Kampanye</a><a href=\"#\">Transparansi</a></nav>",
+      "css": ".ds-nav { display:flex; align-items:center; gap:26px; height:64px; padding:0 24px; background:rgba(255,255,255,.92); border-bottom:1px solid #E2E8F0; } .ds-nav-brand { display:inline-flex; align-items:center; gap:10px; font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif; font-weight:800; font-size:18px; letter-spacing:-.02em; color:#0F172A; text-decoration:none; } .ds-nav-mark { width:22px; height:22px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #2DD4BF, #0D9488 60%); } .ds-nav a:not(.ds-nav-brand) { color:#475569; font-size:14px; font-weight:500; text-decoration:none; margin-left:auto; } .ds-nav a:not(.ds-nav-brand):hover { color:#0F172A; }"
+    },
+    {
+      "name": "Chat Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Suggestion chips in the AI chat; hairline pill, teal hover.",
+      "html": "<button class=\"ds-chat-chip\" type=\"button\">Bagaimana cara donasi?</button>",
+      "css": ".ds-chat-chip { background:#F1F5F9; border:1px solid #CBD5E1; color:#0F172A; font:inherit; font-size:12.5px; padding:7px 12px; border-radius:999px; cursor:pointer; transition:border-color .15s cubic-bezier(.22,1,.36,1), color .15s cubic-bezier(.22,1,.36,1); } .ds-chat-chip:hover { border-color:#0D9488; color:#0F766E; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Spreading Ripple",
+    "overview": "A sedekah platform that feels like a bright, sunlit courtyard — warm, trustworthy, and effortless. The world is slate paper (#F8FAFC) with white cards on 1px hairlines, one teal accent (#0D9488) that only ever points at an action, and amber (#D97706) reserved for warmth and highlights. It refuses the dark-neon crowdfunding template and the metric-scrum hero. Density stays low: generous section padding, one idea per section, short lines. The system earns trust through restraint: a flat resting state, elevation only on hover, a type scale with obvious steps (Plus Jakarta Sans display over Inter body), and numerals that always line up. Motion is authored once (the funding bars, the stats count-up) rather than sprinkled as entrances everywhere.",
+    "keyCharacteristics": [
+      "Slate paper surfaces on 1px hairlines; elevation only as a hover response.",
+      "One teal accent reserved for actions; amber belongs to warmth and highlights.",
+      "Plus Jakarta Sans display over an Inter body; headings always balanced.",
+      "One authored motion moment; everything else transitions on state."
+    ],
+    "rules": [
+      {
+        "name": "The One Accent Rule",
+        "body": "Teal is the only interactive color. It marks actions, focus, and the active state of the funding meter; it never decorates a heading or a background.",
+        "section": "colors"
+      },
+      {
+        "name": "The Amber Warmth Rule",
+        "body": "Amber is for warmth and highlights — trust checks, urgency, and the hot campaign badge — never for primary actions.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Rule",
+        "body": "Every numeral that can be compared — funding totals, donatur counts, percent, days, prices, chat timestamps — uses tabular-nums so columns and updates never jitter.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "A card at rest is hairline-on-paper. Shadows are earned by hover, focus, or being an overlay; they never sit under a resting card with its border.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep one accent color (teal) for all interactive elements and reserve amber for warmth and highlights.",
+      "Do use tabular-nums for every comparable numeral.",
+      "Do balance all headings and keep the display weight at 800.",
+      "Do prefer a flat resting state with a hairline border; earn elevation on hover.",
+      "Do respect prefers-reduced-motion: collapse all animation and transition durations."
+    ],
+    "donts": [
+      "Don't use gradient text, glass blur, or neon glows — emphasis comes from weight, size, and the teal accent.",
+      "Don't add entrance animations on every section; one authored moment (the funding fill and stats count-up) is the motion budget.",
+      "Don't use emoji or unicode glyphs as icons — inline SVG in one consistent stroke.",
+      "Don't place a kicker/eyebrow above headings; headings carry their own weight.",
+      "Don't use soft shadows and a 1px border on the same resting card."
+    ]
+  }
+}

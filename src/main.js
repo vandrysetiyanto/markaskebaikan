@@ -1,5 +1,6 @@
 import { campaign } from "./campaign.js";
 import * as store from "./store.js";
+import * as share from "./share.js";
 import { Chatbot } from "./chatbot.js";
 import { initHeroMotion } from "./hero-motion.js";
 import { payIcon } from "./paylogos.js";
@@ -155,7 +156,7 @@ function campaignCard(c) {
     ? `<div class="cover cover-photo"><img src="${image}" alt="${titleAttr}" loading="lazy" />${badge}</div>`
     : `<div class="cover cover-${theme}">${badge}<div class="cover-glyph">${coverGlyph(theme)}</div></div>`;
   return `
-  <article class="reward-card">
+  <article class="reward-card" data-campaign-key="${c.id}">
     ${cover}
     <div class="card-body">
       <h3 class="card-title">${title}</h3>
@@ -170,7 +171,13 @@ function campaignCard(c) {
         <span>${(c.donors ?? 0).toLocaleString("id-ID")} donatur</span>
         <span class="days-left">${daysLeft(c)}</span>
       </div>
-      <button class="btn btn-primary" type="button" data-donate-campaign="${c.id}">Donasi Sekarang</button>
+      <div class="card-actions">
+        <button class="btn btn-primary" type="button" data-donate-campaign="${c.id}">Donasi Sekarang</button>
+        <button class="card-share" type="button" data-share="${c.id}" aria-label="Bagikan ${titleAttr}">
+          ${lc.share2({ size: 16, "aria-hidden": "true" })}
+          <span>Bagikan</span>
+        </button>
+      </div>
     </div>
   </article>`;
 }
@@ -189,7 +196,7 @@ function coverGlyph(theme) {
 function renderPrograms() {
   $("#program-grid").innerHTML = campaign.programs
     .map((p) => `
-    <article class="program-card">
+    <article class="program-card" data-campaign-key="program:${p.id}">
       <div class="program-icon">${coverGlyph(p.theme)}</div>
       <h3>${p.title}</h3>
       <p>${p.description}</p>
@@ -200,7 +207,13 @@ function renderPrograms() {
             ${pt}
           </li>`).join("")}
       </ul>
-      <button class="btn btn-primary" type="button" data-donate-campaign="program:${p.id}">${p.cta}</button>
+      <div class="program-actions">
+        <button class="btn btn-primary" type="button" data-donate-campaign="program:${p.id}">${p.cta}</button>
+        <button class="card-share" type="button" data-share="program:${p.id}" aria-label="Bagikan program ${p.title}">
+          ${lc.share2({ size: 16, "aria-hidden": "true" })}
+          <span>Bagikan</span>
+        </button>
+      </div>
     </article>`)
     .join("");
 }
@@ -304,6 +317,85 @@ function openReport(id) {
 
 function closeReport() {
   if (reportDialog.open) reportDialog.close();
+}
+
+/* ---------- Share modal ---------- */
+const shareDialog = $("#share-modal");
+let shareCurrent = null;
+
+function shareTarget(key) {
+  if (String(key).startsWith("program:")) {
+    const id = String(key).split(":")[1];
+    return campaign.programs.find((p) => p.id === id) || null;
+  }
+  return store.getCampaigns().find((c) => String(c.id) === String(key)) || null;
+}
+
+function openShare(key) {
+  const item = shareTarget(key);
+  if (!item) return;
+  const isProgram = String(key).startsWith("program:");
+  const text = share.shareText({
+    key,
+    title: item.title,
+    collected: isProgram ? undefined : item.collected,
+    target: isProgram ? undefined : item.target,
+    daysLeft: isProgram ? undefined : item.daysLeft,
+  });
+  shareCurrent = { key, text, url: share.shareUrl(key), title: item.title };
+  $("#share-campaign-title").textContent = item.title;
+  $("#share-caption-preview").textContent = text;
+  $("#share-wa").href = share.waShareLink(text);
+  $("#share-url").value = shareCurrent.url;
+  if (!shareDialog.open) shareDialog.showModal();
+}
+
+function closeShare() {
+  if (shareDialog.open) shareDialog.close();
+}
+
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+  }
+}
+
+async function shareViaInstagram(text, url) {
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: shareCurrent?.title || "Markas Kebaikan", text, url });
+      return;
+    } catch (err) {
+      if (err && err.name === "AbortError") return;
+    }
+  }
+  await copyToClipboard(url);
+  toast("Link disalin — buka Instagram, pilih Story, lalu tempel");
+}
+
+function handleShareHash() {
+  const m = window.location.hash.match(/^#kampanye=(.+)$/);
+  if (!m) return;
+  let key = m[1];
+  try {
+    key = decodeURIComponent(key);
+  } catch {
+    return;
+  }
+  const card = document.querySelector(`[data-campaign-key="${CSS.escape(key)}"]`);
+  if (!card) return;
+  card.scrollIntoView({ behavior: "smooth", block: "center" });
+  card.classList.add("share-highlight");
+  setTimeout(() => card.classList.remove("share-highlight"), 2600);
 }
 
 /* ---------- Donation modal (3-step flow) ---------- */
@@ -680,19 +772,7 @@ function bindStepEvents() {
   }
 
   async function copyDonateRef() {
-    const ref = donateState.ref ?? "";
-    try {
-      await navigator.clipboard.writeText(ref);
-    } catch {
-      const ta = document.createElement("textarea");
-      ta.value = ref;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      ta.remove();
-    }
+    await copyToClipboard(donateState.ref ?? "");
     toast("Ref donasi disalin");
   }
 
@@ -787,6 +867,24 @@ function initEvents() {
   reportDialog.addEventListener("click", (e) => {
     if (e.target === reportDialog) closeReport();
   });
+  document.addEventListener("click", (e) => {
+    const shareBtn = e.target.closest("[data-share]");
+    if (shareBtn) openShare(shareBtn.dataset.share);
+  });
+  window.addEventListener("hashchange", handleShareHash);
+  $("#share-close").addEventListener("click", closeShare);
+  shareDialog.addEventListener("click", (e) => {
+    if (e.target === shareDialog) closeShare();
+  });
+  $("#share-ig").addEventListener("click", async () => {
+    if (!shareCurrent) return;
+    await shareViaInstagram(shareCurrent.text, shareCurrent.url);
+  });
+  $("#share-copy").addEventListener("click", async () => {
+    if (!shareCurrent) return;
+    await copyToClipboard(shareCurrent.url);
+    toast("Link kampanye disalin");
+  });
   const statusDialog = $("#status-modal");
   $("#status-close").addEventListener("click", () => statusDialog.close());
   statusDialog.addEventListener("click", (e) => {
@@ -856,6 +954,7 @@ function boot() {
   renderCampaigns();
   renderPrograms();
   renderCompleted();
+  handleShareHash();
   initEvents();
   initNav();
   initScrollReveal();

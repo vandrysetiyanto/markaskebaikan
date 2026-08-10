@@ -1,6 +1,6 @@
-import { Bot, BookOpen, Check, Clock, Copy, Eye, EyeOff, Image, MessageCircle, Pencil, Search, Send, Sunrise, Trash2, Umbrella, Undo2, User, X } from "lucide";
+import { Bot, BookOpen, Check, Clock, Copy, Eye, EyeOff, Image, Link, MessageCircle, Pencil, Search, Send, Share2, Sunrise, Trash2, Umbrella, Undo2, User, X } from "lucide";
 
-const ICON_NODES = { Bot, BookOpen, Check, Clock, Copy, Eye, EyeOff, Image, MessageCircle, Pencil, Search, Send, Sunrise, Trash2, Umbrella, Undo2, User, X };
+const ICON_NODES = { Bot, BookOpen, Check, Clock, Copy, Eye, EyeOff, Image, Link, MessageCircle, Pencil, Search, Send, Share2, Sunrise, Trash2, Umbrella, Undo2, User, X };
 
 const esc = (s) => String(s ?? "").replace(/"/g, "&quot;");
 
@@ -40,10 +40,12 @@ export const icons = {
   eye: (o) => lucide("Eye", o),
   eyeOff: (o) => lucide("EyeOff", o),
   image: (o) => lucide("Image", o),
+  link: (o) => lucide("Link", o),
   messageCircle: (o) => lucide("MessageCircle", o),
   pencil: (o) => lucide("Pencil", o),
   search: (o) => lucide("Search", o),
   send: (o) => lucide("Send", o),
+  share2: (o) => lucide("Share2", o),
   sunrise: (o) => lucide("Sunrise", o),
   trash: (o) => lucide("Trash2", o),
   umbrella: (o) => lucide("Umbrella", o),

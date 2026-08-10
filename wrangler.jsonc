@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "markaskebaikan",
-  "pages_build_output_dir": "./dist"
+  "compatibility_date": "2025-11-17",
+  "assets": {
+    "directory": "./dist"
+  }
 }

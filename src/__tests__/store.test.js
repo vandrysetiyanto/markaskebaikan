@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import * as store from "../store.js";
+import { campaign } from "../campaign.js";
 
 describe("admin auth", () => {
   beforeEach(() => {
@@ -269,5 +270,149 @@ describe("campaign image validation", () => {
       daysLeft: 10,
     };
     expect(store.validateCampaign(data).join(" ")).toContain("URL gambar");
+  });
+});
+
+describe("campaign active status", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+  });
+
+  it("treats seeded campaigns as active and hides nonaktif ones", () => {
+    expect(store.getActiveCampaigns().length).toBe(store.getCampaigns().length);
+    const id = store.getCampaignsRaw()[0].id;
+    store.setCampaignActive(id, false);
+    expect(store.getActiveCampaigns().some((c) => String(c.id) === String(id))).toBe(false);
+    expect(store.getCampaigns().some((c) => String(c.id) === String(id))).toBe(true);
+  });
+
+  it("reactivates a deactivated campaign", () => {
+    const id = store.getCampaignsRaw()[0].id;
+    store.setCampaignActive(id, false);
+    store.setCampaignActive(id, true);
+    expect(store.getActiveCampaigns().some((c) => String(c.id) === String(id))).toBe(true);
+  });
+
+  it("isCampaignActive is false only for nonaktif status", () => {
+    expect(store.isCampaignActive({ status: "nonaktif" })).toBe(false);
+    expect(store.isCampaignActive({})).toBe(true);
+    expect(store.isCampaignActive({ status: "aktif" })).toBe(true);
+  });
+});
+
+describe("bulk donation delete", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+  });
+
+  it("deleteDonors removes multiple donors and subtracts confirmed amounts from collected", () => {
+    const before = store.getCampaignsRaw()[0];
+    const ids = [store.uid("d"), store.uid("d")];
+    for (const id of ids) {
+      store.saveDonor({
+        id,
+        campaignId: before.id,
+        name: "Test",
+        amount: 100000,
+        status: "pending",
+        createdAt: new Date().toISOString(),
+      });
+      store.approveDonor(id);
+    }
+    expect(store.getCampaignsRaw()[0].collected).toBe(before.collected + 200000);
+    store.deleteDonors(ids);
+    expect(store.getDonors()).toHaveLength(0);
+    expect(store.getCampaignsRaw()[0].collected).toBe(before.collected);
+  });
+
+  it("deleteProgramDonations removes multiple program donations", () => {
+    const ids = [store.uid("p"), store.uid("p")];
+    for (const id of ids) {
+      store.saveProgramDonation({
+        id,
+        programId: "sedekah",
+        name: "Test",
+        amount: 50000,
+        status: "confirmed",
+        createdAt: new Date().toISOString(),
+      });
+    }
+    expect(store.getProgramDonations()).toHaveLength(2);
+    store.deleteProgramDonations(ids);
+    expect(store.getProgramDonations()).toHaveLength(0);
+  });
+});
+
+describe("distributions (penyaluran)", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+  });
+
+  it("saves, lists, deletes, and clears distribution records", () => {
+    const d = store.saveDistribution({
+      programId: "pendidikan",
+      amount: 2000000,
+      date: "2026-08-10",
+      recipient: "Beasiswa 5 anak",
+    });
+    expect(store.getDistributions()).toHaveLength(1);
+    expect(store.getDistributions()[0].id).toBe(d.id);
+    store.deleteDistribution(d.id);
+    expect(store.getDistributions()).toHaveLength(0);
+    store.saveDistribution({
+      programId: "sedekah",
+      amount: 100000,
+      date: "2026-08-11",
+      recipient: "Pangan lansia",
+    });
+    store.clearDistributions();
+    expect(store.getDistributions()).toHaveLength(0);
+  });
+
+  it("programBalance computes masuk, tersalur, sisa, and persen realisasi", () => {
+    store.saveProgramDonation({ id: "a", programId: "pendidikan", name: "X", amount: 1000000, status: "confirmed", createdAt: new Date().toISOString() });
+    store.saveProgramDonation({ id: "b", programId: "pendidikan", name: "Y", amount: 500000, status: "confirmed", createdAt: new Date().toISOString() });
+    store.saveDistribution({ programId: "pendidikan", amount: 1200000, date: "2026-08-10", recipient: "Beasiswa" });
+    const b = store.programBalance().pendidikan;
+    expect(b.received).toBe(1500000);
+    expect(b.distributed).toBe(1200000);
+    expect(b.remaining).toBe(300000);
+    expect(b.pct).toBeCloseTo(80, 1);
+  });
+
+  it("does not count pending program donations in received", () => {
+    store.saveProgramDonation({ id: "a", programId: "infrastruktur", name: "X", amount: 900000, status: "pending", createdAt: new Date().toISOString() });
+    expect(store.programBalance().infrastruktur ?? null).toBeNull();
+  });
+
+  it("validateDistribution rejects missing or invalid fields", () => {
+    expect(store.validateDistribution({}).length).toBeGreaterThan(0);
+    expect(store.validateDistribution({ programId: "pendidikan", date: "2026-08-10", recipient: "Beasiswa", amount: 0 })).not.toHaveLength(0);
+    expect(store.validateDistribution({ programId: "pendidikan", date: "2026-08-10", recipient: "Beasiswa", amount: 50000 })).toEqual([]);
+  });
+});
+
+describe("reset all data", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+  });
+
+  it("restores default campaigns and clears donations, program donations, and distributions", () => {
+    store.saveDonor({ id: "d1", campaignId: "1", name: "X", amount: 100000, status: "confirmed", createdAt: new Date().toISOString() });
+    store.saveProgramDonation({ id: "p1", programId: "sedekah", name: "Y", amount: 50000, status: "confirmed", createdAt: new Date().toISOString() });
+    store.saveDistribution({ programId: "sedekah", amount: 30000, date: "2026-08-10", recipient: "Pangan" });
+    store.addCampaign({ title: "Kampanye Baru", category: "Pendidikan", target: 1000000, collected: 0, daysLeft: 30 });
+    store.resetAllData();
+    expect(store.getDonors()).toHaveLength(0);
+    expect(store.getProgramDonations()).toHaveLength(0);
+    expect(store.getDistributions()).toHaveLength(0);
+    const list = store.getCampaignsRaw();
+    expect(list.some((c) => c.title === "Kampanye Baru")).toBe(false);
+    expect(list).toHaveLength(campaign.activeCampaigns.length);
+    expect(store.getActiveCampaigns()).toHaveLength(campaign.activeCampaigns.length);
   });
 });

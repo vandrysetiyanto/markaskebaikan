@@ -4,6 +4,7 @@ const KEY_CAMPAIGNS = "mk_campaigns";
 const KEY_DONORS = "mk_donors";
 const KEY_PROGRAM_DONATIONS = "mk_program_donations";
 const KEY_PAYMENT_METHODS = "mk_payment_methods";
+const KEY_DISTRIBUTIONS = "mk_distributions";
 const KEY_ADMIN = "mk_admin_logged_in";
 
 export const ADMIN_USER = "admin";
@@ -71,6 +72,18 @@ export function getCampaignsRaw() {
 
 export function getCampaigns() {
   return recalcPendingFromDonors(loadCampaignsRaw(), getDonors());
+}
+
+export function isCampaignActive(c) {
+  return c.status !== "nonaktif";
+}
+
+export function getActiveCampaigns() {
+  return getCampaigns().filter(isCampaignActive);
+}
+
+export function setCampaignActive(id, active) {
+  return updateCampaign(id, { status: active ? "aktif" : "nonaktif" });
 }
 
 export function saveCampaigns(list) {
@@ -165,6 +178,10 @@ export function deleteDonor(id) {
   saveDonors(donors.filter((x) => String(x.id) !== String(id)));
 }
 
+export function deleteDonors(ids) {
+  ids.forEach((id) => deleteDonor(id));
+}
+
 export function clearDonors() {
   localStorage.removeItem(KEY_DONORS);
 }
@@ -230,6 +247,14 @@ export function deleteProgramDonation(id) {
   );
 }
 
+export function deleteProgramDonations(ids) {
+  saveProgramDonations(
+    getProgramDonations().filter(
+      (d) => !ids.some((id) => String(id) === String(d.id))
+    )
+  );
+}
+
 /* ---------- Payment methods (mk_payment_methods) ---------- */
 
 function defaultPaymentMethods() {
@@ -284,6 +309,15 @@ export function resetPaymentMethods() {
   localStorage.removeItem(KEY_PAYMENT_METHODS);
 }
 
+/* ---------- Reset all data ---------- */
+
+export function resetAllData() {
+  localStorage.removeItem(KEY_CAMPAIGNS);
+  localStorage.removeItem(KEY_DONORS);
+  localStorage.removeItem(KEY_PROGRAM_DONATIONS);
+  localStorage.removeItem(KEY_DISTRIBUTIONS);
+}
+
 export function validatePaymentMethod(m) {
   const errors = [];
   if (!String(m.label || "").trim()) errors.push("Nama metode wajib diisi.");
@@ -316,6 +350,68 @@ export function programTotals() {
     totals[d.programId] = (totals[d.programId] || 0) + (Number(d.amount) || 0);
   }
   return totals;
+}
+
+/* ---------- Distributions (mk_distributions) ---------- */
+
+export function getDistributions() {
+  return read(KEY_DISTRIBUTIONS, []);
+}
+
+export function saveDistribution(data) {
+  const list = getDistributions();
+  const d = { id: uid(""), createdAt: new Date().toISOString(), ...data };
+  list.unshift(d);
+  write(KEY_DISTRIBUTIONS, list);
+  return d;
+}
+
+export function deleteDistribution(id) {
+  write(
+    KEY_DISTRIBUTIONS,
+    getDistributions().filter((d) => String(d.id) !== String(id))
+  );
+}
+
+export function clearDistributions() {
+  localStorage.removeItem(KEY_DISTRIBUTIONS);
+}
+
+export function distributionTotals() {
+  const totals = {};
+  for (const d of getDistributions()) {
+    totals[d.programId] = (totals[d.programId] || 0) + (Number(d.amount) || 0);
+  }
+  return totals;
+}
+
+export function programBalance() {
+  const received = programTotals();
+  const distributed = distributionTotals();
+  const ids = new Set([...Object.keys(received), ...Object.keys(distributed)]);
+  const out = {};
+  for (const id of ids) {
+    const masuk = received[id] || 0;
+    const keluar = distributed[id] || 0;
+    out[id] = {
+      programId: id,
+      received: masuk,
+      distributed: keluar,
+      remaining: masuk - keluar,
+      pct: masuk > 0 ? Math.min(999, (keluar / masuk) * 100) : 0,
+    };
+  }
+  return out;
+}
+
+export function validateDistribution(d) {
+  const errors = [];
+  if (!d.programId) errors.push("Pilih program tujuan.");
+  if (!String(d.date || "").trim()) errors.push("Tanggal penyaluran wajib diisi.");
+  if (!String(d.recipient || "").trim()) errors.push("Penerima / kegiatan wajib diisi.");
+  const amount = Number(d.amount);
+  if (!amount || amount <= 0) errors.push("Nominal penyaluran harus lebih dari 0.");
+  return errors;
 }
 
 export function findDonationByRef(ref) {

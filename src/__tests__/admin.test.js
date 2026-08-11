@@ -230,3 +230,151 @@ describe("donation filtering", () => {
     expect(document.getElementById("donors-body").children.length).toBe(2);
   });
 });
+
+describe("campaign active toggle", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+    document.body.innerHTML = bodyHtml;
+    vi.resetModules();
+  });
+
+  it("deactivates and reactivates a campaign via the row toggle", async () => {
+    const store = await import("../store.js");
+    await loadAdmin();
+    submitLogin("admin", "markaskebaikan123");
+    const id = store.getCampaignsRaw()[0].id;
+    const toggle = document.querySelector(`[data-toggle-active="${id}"]`);
+    expect(toggle).not.toBeNull();
+    expect(toggle.getAttribute("aria-label")).toBe("Nonaktifkan");
+    toggle.click();
+    expect(store.getCampaignsRaw().find((c) => String(c.id) === String(id)).status).toBe("nonaktif");
+    expect(document.querySelector(`[data-toggle-active="${id}"]`).getAttribute("aria-label")).toBe("Aktifkan");
+    document.querySelector(`[data-toggle-active="${id}"]`).click();
+    expect(store.getCampaignsRaw().find((c) => String(c.id) === String(id)).status).toBe("aktif");
+  });
+});
+
+describe("bulk delete donations", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+    document.body.innerHTML = bodyHtml;
+    vi.resetModules();
+  });
+
+  it("selects rows individually and deletes them in bulk", async () => {
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    const store = await import("../store.js");
+    for (let i = 0; i < 3; i++) {
+      store.saveDonor({ id: `d${i}`, campaignId: "1", name: `Donor ${i}`, amount: 100000, status: "pending", createdAt: new Date().toISOString() });
+    }
+    await loadAdmin();
+    submitLogin("admin", "markaskebaikan123");
+    const boxes = document.querySelectorAll("#donors-body input[data-select-row]");
+    expect(boxes.length).toBe(3);
+    boxes[0].click();
+    boxes[0].dispatchEvent(new Event("change", { bubbles: true }));
+    boxes[1].click();
+    boxes[1].dispatchEvent(new Event("change", { bubbles: true }));
+    const btn = document.getElementById("bulk-donors-btn");
+    expect(btn.hidden).toBe(false);
+    expect(document.getElementById("bulk-donors-count").textContent).toBe("2");
+    btn.click();
+    expect(store.getDonors()).toHaveLength(1);
+    expect(document.getElementById("bulk-donors-btn").hidden).toBe(true);
+  });
+
+  it("selects all filtered rows via the header checkbox", async () => {
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    const store = await import("../store.js");
+    for (let i = 0; i < 3; i++) {
+      store.saveDonor({ id: `d${i}`, campaignId: "1", name: `Donor ${i}`, amount: 100000, status: "pending", createdAt: new Date().toISOString() });
+    }
+    await loadAdmin();
+    submitLogin("admin", "markaskebaikan123");
+    const all = document.querySelector('[data-select-all="donors"]');
+    all.click();
+    all.dispatchEvent(new Event("change", { bubbles: true }));
+    expect(document.getElementById("bulk-donors-count").textContent).toBe("3");
+    document.getElementById("bulk-donors-btn").click();
+    expect(store.getDonors()).toHaveLength(0);
+  });
+});
+
+describe("reset all data (zona bahaya)", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+    document.body.innerHTML = bodyHtml;
+    vi.resetModules();
+  });
+
+  it("resets only after correct password and the HAPUS keyword", async () => {
+    const store = await import("../store.js");
+    store.saveDonor({ id: "d1", campaignId: "1", name: "X", amount: 50000, status: "confirmed", createdAt: new Date().toISOString() });
+    await loadAdmin();
+    submitLogin("admin", "markaskebaikan123");
+    document.getElementById("reset-data-btn").click();
+    expect(document.getElementById("reset-modal").open).toBe(true);
+    const err = document.getElementById("reset-error");
+
+    document.getElementById("reset-pass").value = "salah";
+    document.getElementById("reset-confirm").value = "HAPUS";
+    document.getElementById("reset-form").dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    expect(err.hidden).toBe(false);
+    expect(store.getDonors()).toHaveLength(1);
+
+    document.getElementById("reset-pass").value = "markaskebaikan123";
+    document.getElementById("reset-confirm").value = "hapus";
+    document.getElementById("reset-form").dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    expect(err.hidden).toBe(false);
+    expect(store.getDonors()).toHaveLength(1);
+
+    document.getElementById("reset-confirm").value = "HAPUS";
+    document.getElementById("reset-form").dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    expect(store.getDonors()).toHaveLength(0);
+    expect(document.getElementById("reset-modal").open).toBe(false);
+  });
+});
+
+describe("distributions (penyaluran)", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+    document.body.innerHTML = bodyHtml;
+    vi.resetModules();
+  });
+
+  it("records a distribution and reflects it in the log and rekap", async () => {
+    const store = await import("../store.js");
+    store.saveProgramDonation({ id: "a", programId: "pendidikan", name: "X", amount: 1000000, status: "confirmed", createdAt: new Date().toISOString() });
+    await loadAdmin();
+    submitLogin("admin", "markaskebaikan123");
+    document.getElementById("dist-program").value = "pendidikan";
+    document.getElementById("dist-amount").value = "400000";
+    document.getElementById("dist-date").value = "2026-08-10";
+    document.getElementById("dist-recipient").value = "Beasiswa 4 anak";
+    document.getElementById("dist-form").dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    const list = store.getDistributions();
+    expect(list).toHaveLength(1);
+    expect(list[0].programId).toBe("pendidikan");
+    expect(list[0].amount).toBe(400000);
+    expect(document.getElementById("dist-body").textContent).toContain("Beasiswa 4 anak");
+    expect(document.getElementById("rekap-body").textContent).toContain("Orang Tua Asuh");
+    expect(document.getElementById("rekap-body").textContent).toContain("40,0%");
+  });
+
+  it("shows a validation error for an invalid distribution", async () => {
+    await loadAdmin();
+    submitLogin("admin", "markaskebaikan123");
+    document.getElementById("dist-program").value = "pendidikan";
+    document.getElementById("dist-amount").value = "0";
+    document.getElementById("dist-date").value = "";
+    document.getElementById("dist-recipient").value = "";
+    document.getElementById("dist-form").dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    const err = document.getElementById("dist-error");
+    expect(err.hidden).toBe(false);
+    expect(err.textContent).toContain("Nominal");
+  });
+});

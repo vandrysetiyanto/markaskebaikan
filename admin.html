@@ -51,6 +51,7 @@
             <button class="admin-tab" type="button" data-tab="campaigns">Kampanye</button>
             <button class="admin-tab" type="button" data-tab="donors">Donasi <span class="tab-badge" id="badge-donors"></span></button>
             <button class="admin-tab" type="button" data-tab="programs">Donasi Program <span class="tab-badge" id="badge-programs"></span></button>
+            <button class="admin-tab" type="button" data-tab="distributions">Penyaluran</button>
             <button class="admin-tab" type="button" data-tab="settings">Pengaturan</button>
           </nav>
           <div class="admin-header-actions">
@@ -116,11 +117,12 @@
                 <option value="confirmed">Terkonfirmasi</option>
               </select>
               <span class="table-count" id="donors-count"></span>
+              <button class="btn btn-danger btn-sm" id="bulk-donors-btn" type="button" hidden>Hapus Terpilih (<span id="bulk-donors-count">0</span>)</button>
             </div>
             <div class="table-scroll">
               <table class="admin-table">
                 <thead>
-                  <tr><th>Waktu</th><th>Donatur</th><th>Kontak</th><th>Jumlah</th><th>Kampanye</th><th>Metode</th><th>Ref</th><th>Bukti</th><th>Status</th><th>Aksi</th></tr>
+                  <tr><th><input class="row-check select-all" type="checkbox" data-select-all="donors" aria-label="Pilih semua donasi" /></th><th>Waktu</th><th>Donatur</th><th>Kontak</th><th>Jumlah</th><th>Kampanye</th><th>Metode</th><th>Ref</th><th>Bukti</th><th>Status</th><th>Aksi</th></tr>
                 </thead>
                 <tbody id="donors-body"></tbody>
               </table>
@@ -148,17 +150,86 @@
                 <option value="confirmed">Terkonfirmasi</option>
               </select>
               <span class="table-count" id="programs-count"></span>
+              <button class="btn btn-danger btn-sm" id="bulk-programs-btn" type="button" hidden>Hapus Terpilih (<span id="bulk-programs-count">0</span>)</button>
             </div>
             <div class="table-scroll">
               <table class="admin-table">
                 <thead>
-                  <tr><th>Waktu</th><th>Donatur</th><th>Program</th><th>Jumlah</th><th>Metode</th><th>Ref</th><th>Bukti</th><th>Status</th><th>Aksi</th></tr>
+                  <tr><th><input class="row-check select-all" type="checkbox" data-select-all="programs" aria-label="Pilih semua donasi program" /></th><th>Waktu</th><th>Donatur</th><th>Program</th><th>Jumlah</th><th>Metode</th><th>Ref</th><th>Bukti</th><th>Status</th><th>Aksi</th></tr>
                 </thead>
                 <tbody id="programs-body"></tbody>
               </table>
             </div>
           </div>
         </section>
+        <section class="admin-pane" id="pane-distributions">
+          <div class="pane-head">
+            <div>
+              <h1>Penyaluran</h1>
+              <p>Catat realisasi penyaluran dana program unggulan dan lihat rekapnya.</p>
+            </div>
+            <div class="pane-actions">
+              <button class="btn btn-ghost btn-sm" id="export-rekap-csv" type="button">Export Rekap CSV</button>
+              <button class="btn btn-ghost btn-sm" id="export-rekap-xls" type="button">Export Rekap XLS</button>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Rekap Realisasi Penyaluran</h2>
+            <div class="table-scroll">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Program / Kampanye</th><th>Donasi Masuk (Terkonfirmasi)</th><th>Tersalur</th><th>Sisa Dana</th><th>Realisasi</th></tr>
+                </thead>
+                <tbody id="rekap-body"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Tambah Penyaluran</h2>
+            <form class="dist-form" id="dist-form" novalidate>
+              <div class="form-grid">
+                <label class="field" for="dist-program">
+                  <span>Program</span>
+                  <select id="dist-program" required></select>
+                </label>
+                <label class="field" for="dist-amount">
+                  <span>Nominal (Rp)</span>
+                  <input id="dist-amount" type="number" min="1" step="any" required placeholder="5000000" />
+                </label>
+              </div>
+              <div class="form-grid">
+                <label class="field" for="dist-date">
+                  <span>Tanggal</span>
+                  <input id="dist-date" type="date" required />
+                </label>
+                <label class="field" for="dist-recipient">
+                  <span>Penerima / Kegiatan</span>
+                  <input id="dist-recipient" type="text" required placeholder="Contoh: Beasiswa 20 anak yatim" />
+                </label>
+              </div>
+              <label class="field" for="dist-note">
+                <span>Catatan <span class="field-opt">(opsional)</span></span>
+                <input id="dist-note" type="text" placeholder="Contoh: kuitansi tersedia untuk audit" />
+              </label>
+              <p class="form-error" id="dist-error" hidden></p>
+              <div class="modal-actions">
+                <button class="btn btn-primary" type="submit">Simpan Penyaluran</button>
+              </div>
+            </form>
+          </div>
+          <div class="card">
+            <h2>Log Penyaluran</h2>
+            <div class="table-scroll">
+              <table class="admin-table">
+                <thead>
+                  <tr><th>Tanggal</th><th>Program</th><th>Penerima / Kegiatan</th><th>Jumlah</th><th>Catatan</th><th>Aksi</th></tr>
+                </thead>
+                <tbody id="dist-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
         <section class="admin-pane" id="pane-settings">
           <div class="pane-head">
             <div>
@@ -176,6 +247,11 @@
                 <tbody id="payments-body"></tbody>
               </table>
             </div>
+          </div>
+          <div class="card danger-zone">
+            <h2>Zona Bahaya</h2>
+            <p>Reset semua data: kampanye kembali ke default, donasi &amp; donasi program dikosongkan, log penyaluran dihapus. Metode pembayaran tidak terpengaruh. Aksi ini tidak dapat dibatalkan.</p>
+            <button class="btn btn-danger" id="reset-data-btn" type="button">Reset Semua Data</button>
           </div>
         </section>
       </main>
@@ -292,6 +368,31 @@
         <div class="modal-actions">
           <button class="btn btn-ghost" id="payment-cancel-2" type="button">Batal</button>
           <button class="btn btn-primary" type="submit">Simpan</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="admin-modal" id="reset-modal">
+      <form class="admin-modal-card" id="reset-form" novalidate>
+        <div class="modal-head">
+          <h3>Reset Semua Data</h3>
+          <button class="modal-close" id="reset-cancel" type="button" aria-label="Tutup">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <p class="reset-warn">Semua kampanye, donasi, donasi program, dan log penyaluran akan dihapus permanen. Kampanye kembali ke data awal (3 seed).</p>
+        <label class="field" for="reset-pass">
+          <span>Password admin</span>
+          <input id="reset-pass" type="password" autocomplete="current-password" required />
+        </label>
+        <label class="field" for="reset-confirm">
+          <span>Ketik <code>HAPUS</code> untuk konfirmasi</span>
+          <input id="reset-confirm" type="text" autocomplete="off" required placeholder="HAPUS" />
+        </label>
+        <p class="form-error" id="reset-error" hidden></p>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" id="reset-cancel-2" type="button">Batal</button>
+          <button class="btn btn-danger" type="submit">Ya, Reset Semua Data</button>
         </div>
       </form>
     </dialog>

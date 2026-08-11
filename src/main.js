@@ -142,7 +142,7 @@ function animateStats(els) {
 
 /* ---------- Active campaigns ---------- */
 function renderCampaigns() {
-  $("#campaign-grid").innerHTML = store.getCampaigns().map(campaignCard).join("");
+  $("#campaign-grid").innerHTML = store.getActiveCampaigns().map(campaignCard).join("");
 }
 
 function campaignCard(c) {
@@ -465,6 +465,10 @@ function openDonate(campaignId) {
     }
   } else if (donateState.campaignId) {
     const c = store.getCampaignsRaw().find((x) => String(x.id) === String(donateState.campaignId));
+    if (c && !store.isCampaignActive(c)) {
+      toast("Kampanye ini sudah ditutup untuk periode ini");
+      return;
+    }
     $("#donate-campaign-label").textContent = c ? `${c.title} · ${campaign.categories[c.category] ?? c.category}` : "";
   } else {
     $("#donate-campaign-label").textContent = "Donasi umum — salurkan ke program yang paling membutuhkan";

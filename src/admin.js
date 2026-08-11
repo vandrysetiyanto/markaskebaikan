@@ -27,6 +27,8 @@ const ICONS = {
   image: lc.image({ size: 14 }),
   eye: lc.eye({ size: 14 }),
   eyeOff: lc.eyeOff({ size: 14 }),
+  pause: lc.pause({ size: 14 }),
+  play: lc.play({ size: 14 }),
 };
 
 function proofCell(d) {
@@ -66,6 +68,42 @@ const filter = {
   donors: { q: "", status: "" },
   programs: { q: "", status: "" },
 };
+
+const selected = {
+  donors: new Set(),
+  programs: new Set(),
+};
+
+const donorsLabeler = (d) => {
+  const c = store.getCampaignsRaw().find((x) => String(x.id) === String(d.campaignId));
+  return c ? c.title : "Donasi umum";
+};
+
+const programsLabeler = (d) => {
+  const p = campaign.programs.find((x) => x.id === d.programId);
+  return p ? p.title : d.programId;
+};
+
+function selectCell(kind, id) {
+  return `<td><input class="row-check" type="checkbox" data-select-row="${id}" data-select-kind="${kind}" ${selected[kind].has(String(id)) ? "checked" : ""} aria-label="Pilih baris" /></td>`;
+}
+
+function updateBulk(kind) {
+  const btn = $(`#bulk-${kind}-btn`);
+  if (!btn) return;
+  const count = $(`#bulk-${kind}-count`);
+  const n = selected[kind].size;
+  count.textContent = n.toLocaleString("id-ID");
+  btn.hidden = n === 0;
+  const selectAll = $(`[data-select-all="${kind}"]`);
+  if (!selectAll) return;
+  const list =
+    kind === "donors"
+      ? filterDonations(store.getDonors(), filter.donors, donorsLabeler)
+      : filterDonations(store.getProgramDonations(), filter.programs, programsLabeler);
+  selectAll.checked = n > 0 && n === list.length;
+  selectAll.indeterminate = n > 0 && n < list.length;
+}
 
 const isDone = (c) => Number(c.daysLeft) <= 0 || Number(c.collected) >= Number(c.target);
 
@@ -123,7 +161,7 @@ function renderDashboard() {
     <div class="dash-stat"><span class="dash-label">Dana Terkonfirmasi</span><span class="dash-value">${fmtRp(total)}</span></div>
     <div class="dash-stat"><span class="dash-label">Transaksi Terkonfirmasi</span><span class="dash-value">${confirmed.length.toLocaleString("id-ID")}</span></div>
     <div class="dash-stat"><span class="dash-label">Menunggu Konfirmasi</span><span class="dash-value">${pending.length.toLocaleString("id-ID")}</span></div>
-    <div class="dash-stat"><span class="dash-label">Kampanye Aktif</span><span class="dash-value">${campaigns.filter((c) => !isDone(c)).length}</span></div>`;
+    <div class="dash-stat"><span class="dash-label">Kampanye Aktif</span><span class="dash-value">${campaigns.filter((c) => !isDone(c) && store.isCampaignActive(c)).length}</span></div>`;
 
   $("#dash-campaigns").innerHTML =
     campaigns
@@ -171,6 +209,14 @@ function renderCampaigns() {
         const thumb = image
           ? `<img class="cell-thumb" src="${image}" alt="" loading="lazy" />`
           : `<div class="cell-thumb cell-thumb-fallback">${esc((c.title || "?").slice(0, 1).toUpperCase())}</div>`;
+        const status = c.status === "nonaktif"
+          ? '<span class="status-pill err">Nonaktif</span>'
+          : isDone(c)
+            ? '<span class="status-pill ok">Selesai</span>'
+            : '<span class="status-pill live">Aktif</span>';
+        const toggleBtn = c.status === "nonaktif"
+          ? `<button class="icon-btn" type="button" data-toggle-active="${c.id}" aria-label="Aktifkan" title="Aktifkan">${ICONS.play}</button>`
+          : `<button class="icon-btn" type="button" data-toggle-active="${c.id}" aria-label="Nonaktifkan" title="Nonaktifkan">${ICONS.pause}</button>`;
         return `
         <tr>
           <td>
@@ -183,9 +229,10 @@ function renderCampaigns() {
           <td class="num">${fmtRp(c.target)}</td>
           <td class="num strong">${fmtRp(c.collected + (c.pendingCollected || 0))}</td>
           <td class="num">${c.daysLeft}</td>
-          <td>${isDone(c) ? '<span class="status-pill ok">Selesai</span>' : '<span class="status-pill live">Aktif</span>'}</td>
+          <td>${status}</td>
           <td>
             <div class="row-actions">
+              ${toggleBtn}
               <button class="icon-btn" type="button" data-edit-campaign="${c.id}" aria-label="Edit">${ICONS.edit}</button>
               <button class="icon-btn danger" type="button" data-delete-campaign="${c.id}" aria-label="Hapus">${ICONS.trash}</button>
             </div>
@@ -330,11 +377,7 @@ function initImagePicker() {
 /* ---------- Donations ---------- */
 function renderDonors() {
   const all = store.getDonors();
-  const labeler = (d) => {
-    const c = store.getCampaignsRaw().find((x) => String(x.id) === String(d.campaignId));
-    return c ? c.title : "Donasi umum";
-  };
-  const list = filterDonations(all, filter.donors, labeler);
+  const list = filterDonations(all, filter.donors, donorsLabeler);
   $("#donors-count").textContent = `Menampilkan ${list.length.toLocaleString("id-ID")} dari ${all.length.toLocaleString("id-ID")} donasi`;
   $("#donors-body").innerHTML =
     list
@@ -343,6 +386,7 @@ function renderDonors() {
         const name = `${esc(d.name)}${d.anonymous ? ' <span style="color:var(--muted);font-weight:400">(anonim)</span>' : ""}`;
         return `
         <tr>
+          ${selectCell("donors", d.id)}
           <td class="num">${fmtDate(d.createdAt)}</td>
           <td>${name}</td>
           <td>${esc(d.contact)}</td>
@@ -357,16 +401,13 @@ function renderDonors() {
           </td>
         </tr>`;
       })
-      .join("") || '<tr><td colspan="10"><p class="empty">Belum ada donasi.</p></td></tr>';
+      .join("") || '<tr><td colspan="11"><p class="empty">Belum ada donasi.</p></td></tr>';
+  updateBulk("donors");
 }
 
 function renderProgramDonations() {
   const all = store.getProgramDonations();
-  const labeler = (d) => {
-    const p = campaign.programs.find((x) => x.id === d.programId);
-    return p ? p.title : d.programId;
-  };
-  const list = filterDonations(all, filter.programs, labeler);
+  const list = filterDonations(all, filter.programs, programsLabeler);
   $("#programs-count").textContent = `Menampilkan ${list.length.toLocaleString("id-ID")} dari ${all.length.toLocaleString("id-ID")} donasi program`;
   $("#programs-body").innerHTML =
     list
@@ -374,6 +415,7 @@ function renderProgramDonations() {
         const p = campaign.programs.find((x) => x.id === d.programId);
         return `
         <tr>
+          ${selectCell("programs", d.id)}
           <td class="num">${fmtDate(d.createdAt)}</td>
           <td>${esc(d.name)}</td>
           <td>${p ? esc(p.title) : esc(d.programId)}</td>
@@ -387,7 +429,8 @@ function renderProgramDonations() {
           </td>
         </tr>`;
       })
-      .join("") || '<tr><td colspan="9"><p class="empty">Belum ada donasi program.</p></td></tr>';
+      .join("") || '<tr><td colspan="10"><p class="empty">Belum ada donasi program.</p></td></tr>';
+  updateBulk("programs");
 }
 
 function renderBadges() {
@@ -589,6 +632,112 @@ function initExports() {
   $("#export-programs-xls").addEventListener("click", () => exportProgramDonations("xls"));
 }
 
+/* ---------- Distributions (penyaluran) ---------- */
+function renderRekap() {
+  const balance = store.programBalance();
+  const rows = [];
+  for (const p of campaign.programs) {
+    const b = balance[p.id] || { received: 0, distributed: 0, remaining: 0, pct: 0 };
+    rows.push(`<tr>
+      <td>${esc(p.title)}</td>
+      <td class="num">${fmtRp(b.received)}</td>
+      <td class="num">${fmtRp(b.distributed)}</td>
+      <td class="num ${b.remaining < 0 ? "text-danger" : ""}">${fmtRp(b.remaining)}</td>
+      <td class="num ${b.pct > 100 ? "text-danger" : ""}">${b.pct.toFixed(1).replace(".", ",")}%</td>
+    </tr>`);
+  }
+  for (const c of campaign.completedCampaigns) {
+    const sisa = c.targetAmount - c.currentAmount;
+    const pct = c.targetAmount > 0 ? (c.currentAmount / c.targetAmount) * 100 : 0;
+    rows.push(`<tr>
+      <td>${esc(c.title)} <span class="status-pill ok">Selesai</span></td>
+      <td class="num">${fmtRp(c.targetAmount)}</td>
+      <td class="num">${fmtRp(c.currentAmount)}</td>
+      <td class="num">${fmtRp(sisa)}</td>
+      <td class="num">${pct.toFixed(0)}%</td>
+    </tr>`);
+  }
+  $("#rekap-body").innerHTML =
+    rows.join("") || '<tr><td colspan="5"><p class="empty">Belum ada data.</p></td></tr>';
+}
+
+function renderDistLog() {
+  const list = store.getDistributions();
+  $("#dist-body").innerHTML =
+    list
+      .map((d) => {
+        const p = campaign.programs.find((x) => x.id === d.programId);
+        return `
+        <tr>
+          <td class="num">${fmtDate(d.date ? new Date(`${d.date}T00:00:00`) : new Date(d.createdAt))}</td>
+          <td>${p ? esc(p.title) : esc(d.programId)}</td>
+          <td>${esc(d.recipient)}</td>
+          <td class="num strong">${fmtRp(d.amount)}</td>
+          <td>${esc(d.note || "—")}</td>
+          <td>
+            <div class="row-actions">
+              <button class="icon-btn danger" type="button" data-delete-dist="${d.id}" aria-label="Hapus" title="Hapus">${ICONS.trash}</button>
+            </div>
+          </td>
+        </tr>`;
+      })
+      .join("") || '<tr><td colspan="6"><p class="empty">Belum ada penyaluran.</p></td></tr>';
+}
+
+function saveDistForm() {
+  const data = {
+    programId: $("#dist-program").value,
+    amount: Number($("#dist-amount").value),
+    date: $("#dist-date").value,
+    recipient: $("#dist-recipient").value.trim(),
+    note: $("#dist-note").value.trim(),
+  };
+  const errors = store.validateDistribution(data);
+  if (errors.length) {
+    $("#dist-error").textContent = errors.join(" ");
+    $("#dist-error").hidden = false;
+    return;
+  }
+  store.saveDistribution(data);
+  $("#dist-form").reset();
+  $("#dist-date").value = new Date().toISOString().slice(0, 10);
+  $("#dist-error").hidden = true;
+  toast("Penyaluran dicatat");
+  renderAll();
+}
+
+function exportRekap(kind) {
+  const balance = store.programBalance();
+  const rows = [];
+  for (const p of campaign.programs) {
+    const b = balance[p.id] || { received: 0, distributed: 0, remaining: 0, pct: 0 };
+    rows.push([p.title, b.received, b.distributed, b.remaining, `${b.pct.toFixed(1)}%`]);
+  }
+  for (const c of campaign.completedCampaigns) {
+    rows.push([c.title, c.targetAmount, c.currentAmount, c.targetAmount - c.currentAmount, "100%"]);
+  }
+  downloadExport(kind, `rekap-penyaluran-${new Date().toISOString().slice(0, 10)}`, [
+    "Program / Kampanye",
+    "Donasi Masuk",
+    "Tersalur",
+    "Sisa Dana",
+    "Realisasi",
+  ], rows);
+}
+
+function initDistributions() {
+  $("#dist-program").innerHTML = campaign.programs
+    .map((p) => `<option value="${esc(p.id)}">${esc(p.title)}</option>`)
+    .join("");
+  $("#dist-date").value = new Date().toISOString().slice(0, 10);
+  $("#dist-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    saveDistForm();
+  });
+  $("#export-rekap-csv").addEventListener("click", () => exportRekap("csv"));
+  $("#export-rekap-xls").addEventListener("click", () => exportRekap("xls"));
+}
+
 /* ---------- Table tools (search & filter) ---------- */
 function initTableTools() {
   let donorsTimer;
@@ -617,9 +766,62 @@ function initTableTools() {
   });
 }
 
+/* ---------- Bulk select & delete ---------- */
+function initBulkSelect() {
+  document.addEventListener("change", (e) => {
+    const all = e.target.closest("[data-select-all]");
+    if (all) {
+      const kind = all.dataset.selectAll;
+      const list =
+        kind === "donors"
+          ? filterDonations(store.getDonors(), filter.donors, donorsLabeler)
+          : filterDonations(store.getProgramDonations(), filter.programs, programsLabeler);
+      if (all.checked) list.forEach((d) => selected[kind].add(String(d.id)));
+      else selected[kind].clear();
+      renderAll();
+      return;
+    }
+    const row = e.target.closest("[data-select-row]");
+    if (row) {
+      const kind = row.dataset.selectKind;
+      const id = row.dataset.selectRow;
+      if (row.checked) selected[kind].add(String(id));
+      else selected[kind].delete(String(id));
+      updateBulk(kind);
+    }
+  });
+
+  $("#bulk-donors-btn").addEventListener("click", () => bulkDelete("donors"));
+  $("#bulk-programs-btn").addEventListener("click", () => bulkDelete("programs"));
+}
+
+function bulkDelete(kind) {
+  const n = selected[kind].size;
+  if (!n) return;
+  const label = kind === "donors" ? "donasi" : "donasi program";
+  if (!confirm(`Hapus ${n.toLocaleString("id-ID")} ${label} terpilih?`)) return;
+  if (kind === "donors") store.deleteDonors([...selected.donors]);
+  else store.deleteProgramDonations([...selected.programs]);
+  selected[kind].clear();
+  toast(`${n.toLocaleString("id-ID")} ${label} dihapus`);
+  renderAll();
+}
+
 /* ---------- Row actions ---------- */
 function initRowActions() {
   document.addEventListener("click", (e) => {
+    const toggleActive = e.target.closest("[data-toggle-active]");
+    if (toggleActive) {
+      const c = store.getCampaignsRaw().find((x) => String(x.id) === String(toggleActive.dataset.toggleActive));
+      if (c) {
+        const next = !store.isCampaignActive(c);
+        store.setCampaignActive(c.id, next);
+        toast(next ? "Kampanye diaktifkan" : "Kampanye dinonaktifkan (musiman)");
+        renderAll();
+      }
+      return;
+    }
+
     const editBtn = e.target.closest("[data-edit-campaign]");
     if (editBtn) {
       const c = store.getCampaignsRaw().find((x) => String(x.id) === String(editBtn.dataset.editCampaign));
@@ -727,6 +929,16 @@ function initRowActions() {
         toast("Donasi dihapus");
         renderAll();
       }
+      return;
+    }
+
+    const delDist = e.target.closest("[data-delete-dist]");
+    if (delDist) {
+      if (confirm("Hapus catatan penyaluran ini?")) {
+        store.deleteDistribution(delDist.dataset.deleteDist);
+        toast("Penyaluran dihapus");
+        renderAll();
+      }
     }
   });
 }
@@ -752,6 +964,41 @@ function initProof() {
   });
 }
 
+/* ---------- Reset all data ---------- */
+function initResetData() {
+  const modal = $("#reset-modal");
+  $("#reset-data-btn").addEventListener("click", () => {
+    $("#reset-form").reset();
+    $("#reset-error").hidden = true;
+    modal.showModal();
+  });
+  $("#reset-cancel").addEventListener("click", () => modal.close());
+  $("#reset-cancel-2").addEventListener("click", () => modal.close());
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.close();
+  });
+  $("#reset-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const pass = $("#reset-pass").value;
+    const confirmVal = $("#reset-confirm").value;
+    const err = $("#reset-error");
+    if (pass !== store.ADMIN_PASS) {
+      err.textContent = "Password admin salah.";
+      err.hidden = false;
+      return;
+    }
+    if (confirmVal !== "HAPUS") {
+      err.textContent = "Ketik HAPUS untuk konfirmasi.";
+      err.hidden = false;
+      return;
+    }
+    store.resetAllData();
+    modal.close();
+    toast("Semua data direset ke awal");
+    renderAll();
+  });
+}
+
 /* ---------- Toast ---------- */
 function toast(msg) {
   const el = $("#toast");
@@ -767,6 +1014,8 @@ function renderAll() {
   renderDonors();
   renderProgramDonations();
   renderPaymentMethods();
+  renderRekap();
+  renderDistLog();
   renderBadges();
 }
 
@@ -785,6 +1034,9 @@ function init() {
     initPaymentForm();
     initExports();
     initTableTools();
+    initBulkSelect();
+    initResetData();
+    initDistributions();
     initProof();
     initRowActions();
   } catch (err) {

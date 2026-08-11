@@ -173,10 +173,11 @@
               <button class="btn btn-ghost btn-sm" id="export-rekap-xls" type="button">Export Rekap XLS</button>
             </div>
           </div>
+          <div class="dist-summary" id="dist-summary" aria-label="Ringkasan penyaluran dana"></div>
           <div class="card">
             <h2>Rekap Realisasi Penyaluran</h2>
             <div class="table-scroll">
-              <table class="admin-table">
+              <table class="admin-table table-cards">
                 <thead>
                   <tr><th>Program / Kampanye</th><th>Donasi Masuk (Terkonfirmasi)</th><th>Tersalur</th><th>Sisa Dana</th><th>Realisasi</th></tr>
                 </thead>
@@ -197,6 +198,7 @@
                   <input id="dist-amount" type="number" min="1" step="any" required placeholder="5000000" />
                 </label>
               </div>
+              <p class="field-hint" id="dist-balance-hint" hidden></p>
               <div class="form-grid">
                 <label class="field" for="dist-date">
                   <span>Tanggal</span>
@@ -220,7 +222,7 @@
           <div class="card">
             <h2>Log Penyaluran</h2>
             <div class="table-scroll">
-              <table class="admin-table">
+              <table class="admin-table table-cards">
                 <thead>
                   <tr><th>Tanggal</th><th>Program</th><th>Penerima / Kegiatan</th><th>Jumlah</th><th>Catatan</th><th>Aksi</th></tr>
                 </thead>
@@ -240,13 +242,29 @@
           </div>
           <div class="card">
             <div class="table-scroll">
-              <table class="admin-table">
+              <table class="admin-table table-cards">
                 <thead>
                   <tr><th>Metode</th><th>Jenis</th><th>Catatan</th><th>Detail VA</th><th>Status</th><th>Aksi</th></tr>
                 </thead>
                 <tbody id="payments-body"></tbody>
               </table>
             </div>
+          </div>
+          <div class="card">
+            <h2>Sinkronisasi Data Antar Perangkat</h2>
+            <p class="sync-desc">Data aplikasi (kampanye, donasi, donasi program, penyaluran) disimpan di cloud sehingga konsisten di semua perangkat. Masukkan passphrase yang sama di tiap perangkat. Tanpa passphrase, data hanya tersimpan di perangkat ini.</p>
+            <div class="sync-row">
+              <label class="field" for="sync-pass">
+                <span>Passphrase sinkronisasi</span>
+                <input id="sync-pass" type="password" autocomplete="off" placeholder="Kata sandi bersama" />
+              </label>
+              <div class="sync-actions">
+                <button class="btn btn-primary" id="sync-save-btn" type="button">Simpan &amp; Sinkronkan</button>
+                <button class="btn btn-ghost" id="sync-now-btn" type="button">Sinkronkan Sekarang</button>
+                <button class="btn btn-ghost btn-danger-text" id="sync-off-btn" type="button" hidden>Lepaskan</button>
+              </div>
+            </div>
+            <p class="sync-status" id="sync-status">Belum diaktifkan.</p>
           </div>
           <div class="card danger-zone">
             <h2>Zona Bahaya</h2>

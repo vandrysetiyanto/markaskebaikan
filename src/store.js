@@ -1,4 +1,5 @@
 import { campaign } from "./campaign.js";
+import { markDirty } from "./sync.js";
 
 const KEY_CAMPAIGNS = "mk_campaigns";
 const KEY_DONORS = "mk_donors";
@@ -47,6 +48,7 @@ function read(key, fallback) {
 function write(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
+    markDirty();
     return true;
   } catch {
     return false;
@@ -113,6 +115,7 @@ export function deleteCampaign(id) {
 
 export function resetCampaigns() {
   localStorage.removeItem(KEY_CAMPAIGNS);
+  markDirty();
 }
 
 /* ---------- Donors (mk_donors) ---------- */
@@ -184,6 +187,7 @@ export function deleteDonors(ids) {
 
 export function clearDonors() {
   localStorage.removeItem(KEY_DONORS);
+  markDirty();
 }
 
 export function donorStats() {
@@ -307,6 +311,7 @@ export function deletePaymentMethod(id) {
 
 export function resetPaymentMethods() {
   localStorage.removeItem(KEY_PAYMENT_METHODS);
+  markDirty();
 }
 
 /* ---------- Reset all data ---------- */
@@ -316,6 +321,7 @@ export function resetAllData() {
   localStorage.removeItem(KEY_DONORS);
   localStorage.removeItem(KEY_PROGRAM_DONATIONS);
   localStorage.removeItem(KEY_DISTRIBUTIONS);
+  markDirty();
 }
 
 export function validatePaymentMethod(m) {
@@ -375,6 +381,7 @@ export function deleteDistribution(id) {
 
 export function clearDistributions() {
   localStorage.removeItem(KEY_DISTRIBUTIONS);
+  markDirty();
 }
 
 export function distributionTotals() {

@@ -1,5 +1,7 @@
 import { campaign } from "./campaign.js";
 import * as store from "./store.js";
+import * as sync from "./sync.js";
+import * as donations from "./donations.js";
 import * as share from "./share.js";
 import { makeShareCardFile } from "./share-card.js";
 import { Chatbot } from "./chatbot.js";
@@ -853,7 +855,7 @@ function executePayment() {
 
 function recordDonation() {
   const displayName = donateState.anonymous ? "Hamba Allah" : donateState.name.trim() || "Hamba Allah";
-  const common = {
+  const record = {
     id: store.uid(""),
     name: displayName,
     amount: donateState.amount,
@@ -867,14 +869,14 @@ function recordDonation() {
     createdAt: new Date().toISOString(),
   };
   if (donateState.programId) {
-    store.saveProgramDonation({ ...common, programId: donateState.programId });
+    record.programId = donateState.programId;
+    store.saveProgramDonation(record);
   } else {
-    store.saveDonor({
-      ...common,
-      campaignId: donateState.campaignId,
-      anonymous: donateState.anonymous,
-    });
+    record.campaignId = donateState.campaignId;
+    record.anonymous = donateState.anonymous;
+    store.saveDonor(record);
   }
+  donations.queueDonation(record);
 }
 
 /* ---------- Toast ---------- */
@@ -1001,6 +1003,14 @@ function boot() {
   initScrollReveal();
   initHeroMotion();
   new Chatbot();
+  window.addEventListener("mk:synced", () => {
+    renderStats();
+    renderCampaigns();
+    renderPrograms();
+    renderCompleted();
+  });
+  sync.initSync();
+  donations.flushQueue();
 }
 
 boot();

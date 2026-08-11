@@ -1,5 +1,6 @@
 import { campaign } from "./campaign.js";
 import * as store from "./store.js";
+import * as sync from "./sync.js";
 import { PAY_BRANDS, ID_SLUGS, payIcon, logoSvg } from "./paylogos.js";
 import { icons as lc } from "./icons.js";
 
@@ -452,7 +453,7 @@ function renderPaymentMethods() {
         const detail =
           m.kind === "va"
             ? `${esc(m.vaName || "-")}<br><span style="font-variant-numeric:tabular-nums">${esc(m.vaNumber || "-")}</span>`
-            : '<span style="color:var(--muted)">—</span>';
+            : '<span style="color:var(--muted)">-</span>';
         const status =
           m.enabled === false
             ? '<span class="status-pill err">Nonaktif</span>'
@@ -461,12 +462,12 @@ function renderPaymentMethods() {
         const toggleLabel = m.enabled === false ? "Aktifkan" : "Nonaktifkan";
         return `
         <tr>
-          <td>${logoSvg(m) ? `<span class="cell-thumb">${payIcon(m)}</span>` : `<span class="cell-thumb cell-thumb-fallback">${esc((m.label || "?").slice(0, 1).toUpperCase())}</span>`} <span style="font-weight:600">${esc(m.label)}</span></td>
-          <td>${esc(m.kind === "va" ? "Virtual Account" : "QRIS / E-Wallet")}</td>
-          <td>${esc(m.note || "—")}</td>
-          <td>${detail}</td>
-          <td>${status}</td>
-          <td>
+          <td data-primary>${logoSvg(m) ? `<span class="cell-thumb">${payIcon(m)}</span>` : `<span class="cell-thumb cell-thumb-fallback">${esc((m.label || "?").slice(0, 1).toUpperCase())}</span>`} <span style="font-weight:600">${esc(m.label)}</span></td>
+          <td data-label="Jenis">${esc(m.kind === "va" ? "Virtual Account" : "QRIS / E-Wallet")}</td>
+          <td data-label="Catatan">${esc(m.note || "-")}</td>
+          <td data-label="Detail VA">${detail}</td>
+          <td data-label="Status">${status}</td>
+          <td data-label="Aksi">
             <div class="row-actions">
               <button class="icon-btn" type="button" data-toggle-payment="${m.id}" aria-label="${toggleLabel}" title="${toggleLabel}">${toggleIcon}</button>
               <button class="icon-btn" type="button" data-edit-payment="${m.id}" aria-label="Edit" title="Edit">${ICONS.edit}</button>
@@ -475,7 +476,8 @@ function renderPaymentMethods() {
           </td>
         </tr>`;
       })
-      .join("") || '<tr><td colspan="6"><p class="empty">Belum ada metode pembayaran.</p></td></tr>';
+      .join("") ||
+      `<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">${lc.bookOpen({ size: 18 })}</div><p>Belum ada metode pembayaran</p><span>Tambahkan metode agar donatur bisa memilih cara berdonasi.</span></div></td></tr>`;
 }
 
 let editingPaymentId = null;
@@ -633,32 +635,70 @@ function initExports() {
 }
 
 /* ---------- Distributions (penyaluran) ---------- */
+const pctFill = (pct) => {
+  const over = pct > 100;
+  return `<span class="pct-wrap"><span class="pct-bar"><span class="pct-fill ${over ? "over" : ""}" style="width:${Math.min(100, pct)}%"></span></span><span class="pct-text ${over ? "text-danger" : ""}">${pct.toFixed(1).replace(".", ",")}%</span></span>`;
+};
+
+function renderDistSummary() {
+  const el = $("#dist-summary");
+  if (!el) return;
+  const received = Object.values(store.programTotals()).reduce((a, b) => a + (Number(b) || 0), 0);
+  const distributed = Object.values(store.distributionTotals()).reduce((a, b) => a + (Number(b) || 0), 0);
+  const remaining = received - distributed;
+  el.innerHTML = `
+    <div class="dist-sum-stat"><span class="dash-label">Dana Masuk</span><span class="dash-value">${fmtRp(received)}</span></div>
+    <div class="dist-sum-stat"><span class="dash-label">Dana Tersalur</span><span class="dash-value">${fmtRp(distributed)}</span></div>
+    <div class="dist-sum-stat"><span class="dash-label">Sisa Dana</span><span class="dash-value ${remaining < 0 ? "text-danger" : ""}">${fmtRp(remaining)}</span></div>`;
+}
+
+function updateDistBalanceHint() {
+  const hint = $("#dist-balance-hint");
+  if (!hint) return;
+  const programId = $("#dist-program").value;
+  const amount = Number($("#dist-amount").value) || 0;
+  const p = programId && campaign.programs.find((x) => String(x.id) === String(programId));
+  const balance = store.programBalance();
+  const b = balance[programId] || { remaining: 0 };
+  const remaining = b.remaining || 0;
+  const over = amount > 0 && amount > remaining;
+  if (!p) {
+    hint.hidden = true;
+    hint.className = "field-hint";
+    return;
+  }
+  hint.innerHTML = `Sisa dana program ini: <strong>${fmtRp(remaining)}</strong>${over ? ' <span class="text-danger">- melebihi sisa, periksa kembali.</span>' : ""}`;
+  hint.classList.toggle("warn", over);
+  hint.hidden = false;
+}
+
 function renderRekap() {
   const balance = store.programBalance();
   const rows = [];
   for (const p of campaign.programs) {
     const b = balance[p.id] || { received: 0, distributed: 0, remaining: 0, pct: 0 };
     rows.push(`<tr>
-      <td>${esc(p.title)}</td>
-      <td class="num">${fmtRp(b.received)}</td>
-      <td class="num">${fmtRp(b.distributed)}</td>
-      <td class="num ${b.remaining < 0 ? "text-danger" : ""}">${fmtRp(b.remaining)}</td>
-      <td class="num ${b.pct > 100 ? "text-danger" : ""}">${b.pct.toFixed(1).replace(".", ",")}%</td>
+      <td data-primary>${esc(p.title)}</td>
+      <td data-label="Donasi Masuk" class="num">${fmtRp(b.received)}</td>
+      <td data-label="Tersalur" class="num">${fmtRp(b.distributed)}</td>
+      <td data-label="Sisa Dana" class="num ${b.remaining < 0 ? "text-danger" : ""}">${fmtRp(b.remaining)}</td>
+      <td data-label="Realisasi" class="num">${pctFill(b.pct)}</td>
     </tr>`);
   }
   for (const c of campaign.completedCampaigns) {
     const sisa = c.targetAmount - c.currentAmount;
     const pct = c.targetAmount > 0 ? (c.currentAmount / c.targetAmount) * 100 : 0;
     rows.push(`<tr>
-      <td>${esc(c.title)} <span class="status-pill ok">Selesai</span></td>
-      <td class="num">${fmtRp(c.targetAmount)}</td>
-      <td class="num">${fmtRp(c.currentAmount)}</td>
-      <td class="num">${fmtRp(sisa)}</td>
-      <td class="num">${pct.toFixed(0)}%</td>
+      <td data-primary>${esc(c.title)} <span class="status-pill ok">Selesai</span></td>
+      <td data-label="Donasi Masuk" class="num">${fmtRp(c.targetAmount)}</td>
+      <td data-label="Tersalur" class="num">${fmtRp(c.currentAmount)}</td>
+      <td data-label="Sisa Dana" class="num">${fmtRp(sisa)}</td>
+      <td data-label="Realisasi" class="num">${pctFill(pct)}</td>
     </tr>`);
   }
   $("#rekap-body").innerHTML =
-    rows.join("") || '<tr><td colspan="5"><p class="empty">Belum ada data.</p></td></tr>';
+    rows.join("") ||
+    `<tr><td colspan="5"><div class="empty-state"><div class="empty-state-icon">${lc.umbrella({ size: 18 })}</div><p>Belum ada data penyaluran</p><span>Donasi program yang sudah terkonfirmasi akan direkap di sini.</span></div></td></tr>`;
 }
 
 function renderDistLog() {
@@ -669,19 +709,20 @@ function renderDistLog() {
         const p = campaign.programs.find((x) => x.id === d.programId);
         return `
         <tr>
-          <td class="num">${fmtDate(d.date ? new Date(`${d.date}T00:00:00`) : new Date(d.createdAt))}</td>
-          <td>${p ? esc(p.title) : esc(d.programId)}</td>
-          <td>${esc(d.recipient)}</td>
-          <td class="num strong">${fmtRp(d.amount)}</td>
-          <td>${esc(d.note || "—")}</td>
-          <td>
+          <td data-label="Tanggal" class="num">${fmtDate(d.date ? new Date(`${d.date}T00:00:00`) : new Date(d.createdAt))}</td>
+          <td data-label="Program">${p ? esc(p.title) : esc(d.programId)}</td>
+          <td data-primary>${esc(d.recipient)}</td>
+          <td data-label="Jumlah" class="num strong">${fmtRp(d.amount)}</td>
+          <td data-label="Catatan">${esc(d.note || "-")}</td>
+          <td data-label="Aksi">
             <div class="row-actions">
               <button class="icon-btn danger" type="button" data-delete-dist="${d.id}" aria-label="Hapus" title="Hapus">${ICONS.trash}</button>
             </div>
           </td>
         </tr>`;
       })
-      .join("") || '<tr><td colspan="6"><p class="empty">Belum ada penyaluran.</p></td></tr>';
+      .join("") ||
+      `<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">${lc.clock({ size: 18 })}</div><p>Belum ada penyaluran</p><span>Catat penyaluran pertama lewat form di atas.</span></div></td></tr>`;
 }
 
 function saveDistForm() {
@@ -704,6 +745,7 @@ function saveDistForm() {
   $("#dist-error").hidden = true;
   toast("Penyaluran dicatat");
   renderAll();
+  updateDistBalanceHint();
 }
 
 function exportRekap(kind) {
@@ -734,6 +776,8 @@ function initDistributions() {
     e.preventDefault();
     saveDistForm();
   });
+  $("#dist-program").addEventListener("change", updateDistBalanceHint);
+  $("#dist-amount").addEventListener("input", updateDistBalanceHint);
   $("#export-rekap-csv").addEventListener("click", () => exportRekap("csv"));
   $("#export-rekap-xls").addEventListener("click", () => exportRekap("xls"));
 }
@@ -964,6 +1008,60 @@ function initProof() {
   });
 }
 
+/* ---------- Sync data (cross-device) ---------- */
+function renderSyncStatus() {
+  const s = sync.getSyncStatus();
+  const statusEl = $("#sync-status");
+  const offBtn = $("#sync-off-btn");
+  if (!s.enabled) {
+    statusEl.innerHTML = '<span class="dot"></span> Belum diaktifkan. Data hanya tersimpan di perangkat ini.';
+    offBtn.hidden = true;
+    return;
+  }
+  const time = s.lastSync
+    ? new Date(s.lastSync).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" })
+    : "—";
+  const dirty = s.dirty ? " · <strong>Menunggu pengiriman…</strong>" : "";
+  const err = s.lastError
+    ? ` · <span class="err">Gagal sinkron: ${esc(s.lastError)}</span>`
+    : "";
+  const cls = s.lastError ? "err" : "ok";
+  statusEl.innerHTML = `<span class="dot ${cls}"></span> Sinkron aktif · Terakhir: ${time}${dirty}${err}`;
+  offBtn.hidden = false;
+}
+
+function initSyncPanel() {
+  renderSyncStatus();
+  $("#sync-save-btn").addEventListener("click", async () => {
+    const pass = $("#sync-pass").value;
+    if (!pass.trim()) {
+      toast("Masukkan passphrase terlebih dahulu.");
+      return;
+    }
+    $("#sync-save-btn").disabled = true;
+    const r = await sync.enableSync(pass);
+    $("#sync-save-btn").disabled = false;
+    $("#sync-pass").value = "";
+    toast(r.ok ? "Sinkronisasi diaktifkan." : `Gagal: ${r.error}`);
+    renderSyncStatus();
+  });
+  $("#sync-now-btn").addEventListener("click", async () => {
+    const r = await sync.syncNow();
+    toast(r.push.ok ? "Sinkronisasi selesai." : `Gagal: ${r.push.error || "belum aktif"}`);
+    renderSyncStatus();
+  });
+  $("#sync-off-btn").addEventListener("click", () => {
+    sync.disableSync();
+    toast("Sinkronisasi dilepas dari perangkat ini.");
+    renderSyncStatus();
+  });
+  window.addEventListener("mk:syncchange", renderSyncStatus);
+  window.addEventListener("mk:synced", renderAll);
+  setInterval(() => {
+    if (sync.getSyncStatus().enabled) sync.syncPoll();
+  }, 30000);
+}
+
 /* ---------- Reset all data ---------- */
 function initResetData() {
   const modal = $("#reset-modal");
@@ -1014,9 +1112,11 @@ function renderAll() {
   renderDonors();
   renderProgramDonations();
   renderPaymentMethods();
+  renderDistSummary();
   renderRekap();
   renderDistLog();
   renderBadges();
+  updateDistBalanceHint();
 }
 
 function init() {
@@ -1036,6 +1136,7 @@ function init() {
     initTableTools();
     initBulkSelect();
     initResetData();
+    initSyncPanel();
     initDistributions();
     initProof();
     initRowActions();

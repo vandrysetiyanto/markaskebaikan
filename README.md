@@ -59,9 +59,39 @@ donors: add QRIS/e-wallet or Virtual Account (VA) methods, edit labels/VA detail
 toggle methods on/off, or delete them. Changes are stored in
 `localStorage` (`mk_payment_methods`) and immediately apply to the donation modal.
 
+## Cross-device sync (Cloudflare Workers + KV)
+
+By default all app data lives in `localStorage`, which is per-device/per-browser.
+To keep campaigns, donations, program donations, and distributions consistent
+across devices, the app can sync a single data blob through a small Cloudflare
+Worker backed by KV.
+
+- Enter the same **passphrase** in *Pengaturan → Sinkronisasi Data Antar
+  Perangkat* on each device you use. The passphrase selects a private workspace
+  (its SHA-256 is the KV key), so different passphrases = isolated datasets.
+- Devices without a passphrase keep working exactly as before (local-only).
+  Donations from plain visitors stay on that visitor's device.
+- The last writer wins; a stale push (older `updatedAt`) is rejected with 409 and
+  the device pulls the newer server data.
+
+### Deploy
+
+```bash
+npm run build
+
+# Create the KV namespace once, then paste its ID into wrangler.jsonc
+npx wrangler kv namespace create DATA
+
+npx wrangler deploy
+```
+
+`worker.js` implements `GET/PUT /api/data` (token via `Authorization: Bearer
+<sha256(passphrase)>`, body size guard, CORS) and falls through to the built
+assets for everything else.
+
 ## Scripts
 
 - `npm run dev` — dev server
 - `npm run build` — production build
 - `npm run preview` — preview the build
-- `npm test` — unit tests (chat/streaming client + session + campaign data)
+- `npm test` — unit tests (store, sync, worker API, chat/streaming client, campaign data)

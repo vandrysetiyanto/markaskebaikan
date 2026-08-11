@@ -1,6 +1,7 @@
 import { campaign } from "./campaign.js";
 import * as store from "./store.js";
 import * as share from "./share.js";
+import { makeShareCardFile } from "./share-card.js";
 import { Chatbot } from "./chatbot.js";
 import { initHeroMotion } from "./hero-motion.js";
 import { payIcon } from "./paylogos.js";
@@ -342,10 +343,10 @@ function openShare(key) {
     target: isProgram ? undefined : item.target,
     daysLeft: isProgram ? undefined : item.daysLeft,
   });
-  shareCurrent = { key, text, url: share.shareUrl(key), title: item.title };
+  shareCurrent = { key, text, url: share.shareUrl(key), title: item.title, item, isProgram };
   $("#share-campaign-title").textContent = item.title;
   $("#share-caption-preview").textContent = text;
-  $("#share-wa").href = share.waShareLink(text);
+  $("#share-wa-link").href = share.waShareLink(text);
   $("#share-url").value = shareCurrent.url;
   if (!shareDialog.open) shareDialog.showModal();
 }
@@ -369,17 +370,51 @@ async function copyToClipboard(text) {
   }
 }
 
-async function shareViaInstagram(text, url) {
-  if (navigator.share) {
-    try {
-      await navigator.share({ title: shareCurrent?.title || "Markas Kebaikan", text, url });
+async function shareWithMedia(btn) {
+  const s = shareCurrent;
+  if (!s) return;
+  const origLabel = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = "Menyiapkan…";
+  try {
+    const file = await makeShareCardFile({
+      key: s.key,
+      title: s.item.title,
+      image: s.isProgram ? undefined : store.sanitizeURL(s.item.image),
+      category: s.isProgram ? "Program Unggulan" : s.item.category,
+      description: s.isProgram ? s.item.description : undefined,
+      collected: s.isProgram ? undefined : s.item.collected,
+      target: s.isProgram ? undefined : s.item.target,
+      daysLeft: s.isProgram ? undefined : s.item.daysLeft,
+      donors: s.isProgram ? undefined : s.item.donors,
+      url: s.url,
+    });
+    const canShareFiles = !!(navigator.canShare && navigator.canShare({ files: [file] }));
+    if (canShareFiles) {
+      await navigator.share({ files: [file], title: s.title, text: s.text });
       return;
-    } catch (err) {
-      if (err && err.name === "AbortError") return;
     }
+    downloadFile(file);
+    await copyToClipboard(s.text);
+    toast("Gambar diunduh & caption disalin — tempel di WhatsApp/Story");
+  } catch (err) {
+    if (err && err.name === "AbortError") return;
+    toast("Gagal menyiapkan gambar — gunakan opsi link");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = origLabel;
   }
-  await copyToClipboard(url);
-  toast("Link disalin — buka Instagram, pilih Story, lalu tempel");
+}
+
+function downloadFile(file) {
+  const a = document.createElement("a");
+  const url = URL.createObjectURL(file);
+  a.href = url;
+  a.download = file.name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
 }
 
 function handleShareHash() {
@@ -876,9 +911,11 @@ function initEvents() {
   shareDialog.addEventListener("click", (e) => {
     if (e.target === shareDialog) closeShare();
   });
-  $("#share-ig").addEventListener("click", async () => {
-    if (!shareCurrent) return;
-    await shareViaInstagram(shareCurrent.text, shareCurrent.url);
+  $("#share-wa-media").addEventListener("click", async (e) => {
+    await shareWithMedia(e.currentTarget);
+  });
+  $("#share-ig").addEventListener("click", async (e) => {
+    await shareWithMedia(e.currentTarget);
   });
   $("#share-copy").addEventListener("click", async () => {
     if (!shareCurrent) return;

@@ -216,6 +216,7 @@ function openCampaignForm(c) {
     $("#f-collected").value = c.collected || 0;
     $("#f-days").value = c.daysLeft;
   }
+  setImagePreview(c ? c.image || "" : "");
   $("#campaign-modal").showModal();
   $("#f-title").focus();
 }
@@ -258,6 +259,72 @@ function initCampaignForm() {
   $("#campaign-modal").addEventListener("click", (e) => {
     if (e.target === $("#campaign-modal")) $("#campaign-modal").close();
   });
+}
+
+/* ---------- Image picker (upload / camera) ---------- */
+function setImagePreview(src) {
+  const box = $("#f-image-preview-box");
+  const img = $("#f-image-preview");
+  if (!src) {
+    box.hidden = true;
+    img.removeAttribute("src");
+    return;
+  }
+  img.src = src;
+  box.hidden = false;
+}
+
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = () => reject(new Error("Gagal membaca gambar"));
+    r.readAsDataURL(file);
+  });
+}
+
+function compressImage(dataUrl, maxDim = 1280, quality = 0.8) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, maxDim / Math.max(img.naturalWidth, img.naturalHeight));
+      const w = Math.max(1, Math.round(img.naturalWidth * scale));
+      const h = Math.max(1, Math.round(img.naturalHeight * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL("image/jpeg", quality));
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
+async function handleImageFile(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  try {
+    const raw = await fileToDataUrl(file);
+    const jpeg = await compressImage(raw);
+    $("#f-image").value = jpeg;
+    setImagePreview(jpeg);
+    toast("Gambar siap — simpan kampanye");
+  } catch {
+    toast("Gagal memuat gambar");
+  } finally {
+    input.value = "";
+  }
+}
+
+function initImagePicker() {
+  $("#f-image-upload").addEventListener("change", (e) => handleImageFile(e.target));
+  $("#f-image-capture").addEventListener("change", (e) => handleImageFile(e.target));
+  $("#f-image-remove").addEventListener("click", () => {
+    $("#f-image").value = "";
+    setImagePreview("");
+  });
+  $("#f-image").addEventListener("input", (e) => setImagePreview(e.target.value.trim() || ""));
 }
 
 /* ---------- Donations ---------- */
@@ -714,6 +781,7 @@ function init() {
     initLogout();
     initTabs();
     initCampaignForm();
+    initImagePicker();
     initPaymentForm();
     initExports();
     initTableTools();

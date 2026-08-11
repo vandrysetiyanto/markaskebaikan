@@ -197,18 +197,37 @@
           <span>Kategori</span>
           <select id="f-category"></select>
         </label>
-        <label class="field" for="f-image">
-          <span>Gambar Cover (URL)</span>
-          <input id="f-image" type="url" placeholder="https://…" />
-        </label>
+        <div class="field" id="field-image">
+          <span>Gambar Cover <span class="field-opt">(opsional)</span></span>
+          <div class="image-picker">
+            <div class="image-picker-preview" id="f-image-preview-box" hidden>
+              <img id="f-image-preview" alt="Pratinjau cover" />
+              <button class="image-remove" id="f-image-remove" type="button" aria-label="Hapus gambar">&times;</button>
+            </div>
+            <div class="image-picker-actions">
+              <label class="btn btn-ghost btn-sm">
+                Unggah Gambar
+                <input id="f-image-upload" type="file" accept="image/*" hidden />
+              </label>
+              <label class="btn btn-ghost btn-sm">
+                Ambil Foto
+                <input id="f-image-capture" type="file" accept="image/*" capture="environment" hidden />
+              </label>
+            </div>
+            <div class="image-url-row">
+              <span class="image-url-sep">atau tempel URL</span>
+              <input id="f-image" type="text" placeholder="https://…" />
+            </div>
+          </div>
+        </div>
         <div class="form-grid">
           <label class="field" for="f-target">
             <span>Target Dana (Rp)</span>
-            <input id="f-target" type="number" min="1" step="1000" required />
+            <input id="f-target" type="number" min="1" step="any" required />
           </label>
           <label class="field" for="f-collected">
             <span>Dana Terkumpul (Rp)</span>
-            <input id="f-collected" type="number" min="0" step="1000" value="0" />
+            <input id="f-collected" type="number" min="0" step="any" value="0" />
           </label>
         </div>
         <label class="field" for="f-days">

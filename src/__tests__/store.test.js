@@ -229,3 +229,45 @@ describe("findDonationByRef", () => {
     expect(store.findDonationByRef("  ")).toBeNull();
   });
 });
+
+describe("campaign image validation", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+  });
+
+  it("sanitizeURL accepts https and data:image URLs", () => {
+    expect(store.sanitizeURL("https://example.com/a.jpg")).toBe("https://example.com/a.jpg");
+    expect(store.sanitizeURL("data:image/jpeg;base64,AAAA").startsWith("data:image/jpeg")).toBe(true);
+  });
+
+  it("sanitizeURL rejects javascript: and empty values", () => {
+    expect(store.sanitizeURL("javascript:alert(1)")).toBe("");
+    expect(store.sanitizeURL("")).toBe("");
+    expect(store.sanitizeURL("  ")).toBe("");
+  });
+
+  it("validateCampaign accepts a data:image cover (upload/camera result)", () => {
+    const data = {
+      title: "Kampanye A",
+      category: "Pendidikan",
+      image: "data:image/jpeg;base64,/9j/4AAQSkZJRg==",
+      target: 1000000,
+      collected: 0,
+      daysLeft: 10,
+    };
+    expect(store.validateCampaign(data)).toEqual([]);
+  });
+
+  it("validateCampaign flags an invalid cover URL", () => {
+    const data = {
+      title: "Kampanye B",
+      category: "Pendidikan",
+      image: "javascript:alert(1)",
+      target: 1000000,
+      collected: 0,
+      daysLeft: 10,
+    };
+    expect(store.validateCampaign(data).join(" ")).toContain("URL gambar");
+  });
+});

@@ -107,6 +107,49 @@ describe("settings: payment methods", () => {
   });
 });
 
+describe("campaign image picker", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    localStorage.clear();
+    document.body.innerHTML = bodyHtml;
+    vi.resetModules();
+  });
+
+  it("hides preview on open and shows it when a data URL is set via the URL input", async () => {
+    await loadAdmin();
+    submitLogin("admin", "markaskebaikan123");
+    document.getElementById("add-campaign-btn").click();
+    const box = document.getElementById("f-image-preview-box");
+    expect(box.hidden).toBe(true);
+
+    const input = document.getElementById("f-image");
+    input.value = "data:image/jpeg;base64,/9j/4AAQSkZJRg==";
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    expect(box.hidden).toBe(false);
+    expect(document.getElementById("f-image-preview").getAttribute("src")).toBe(input.value);
+  });
+
+  it("clears the image when the remove button is clicked", async () => {
+    await loadAdmin();
+    submitLogin("admin", "markaskebaikan123");
+    document.getElementById("add-campaign-btn").click();
+    document.getElementById("f-image").value = "data:image/jpeg;base64,/9j/4AAQSkZJRg==";
+    document.getElementById("f-image").dispatchEvent(new Event("input", { bubbles: true }));
+    document.getElementById("f-image-remove").click();
+    expect(document.getElementById("f-image-preview-box").hidden).toBe(true);
+    expect(document.getElementById("f-image").value).toBe("");
+  });
+
+  it("offers an upload and a camera capture input", async () => {
+    await loadAdmin();
+    submitLogin("admin", "markaskebaikan123");
+    document.getElementById("add-campaign-btn").click();
+    expect(document.getElementById("f-image-upload").getAttribute("accept")).toBe("image/*");
+    expect(document.getElementById("f-image-capture").getAttribute("accept")).toBe("image/*");
+    expect(document.getElementById("f-image-capture").getAttribute("capture")).toBe("environment");
+  });
+});
+
 describe("donation filtering", () => {
   beforeEach(() => {
     sessionStorage.clear();

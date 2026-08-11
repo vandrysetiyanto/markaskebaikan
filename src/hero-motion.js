@@ -87,8 +87,11 @@ export function initHeroMotion() {
   let cx = 0;
   let cy = 0;
   let raf = 0;
+  let visible = !document.hidden;
+  let heroRect = hero.getBoundingClientRect();
 
   const apply = () => {
+    if (!visible) return;
     for (const el of layers) {
       const f = Number(el.dataset.parallax) || 0;
       el.style.transform = `translate3d(${(-tx * f * MAX_SHIFT).toFixed(2)}px, ${(-ty * f * MAX_SHIFT).toFixed(2)}px, 0)`;
@@ -96,6 +99,10 @@ export function initHeroMotion() {
   };
 
   const tick = () => {
+    if (!visible) {
+      raf = 0;
+      return;
+    }
     tx += (cx - tx) * LERP;
     ty += (cy - ty) * LERP;
     if (Math.abs(tx) < 0.01 && Math.abs(ty) < 0.01 && cx === 0 && cy === 0) {
@@ -114,10 +121,19 @@ export function initHeroMotion() {
   };
 
   const onMove = (e) => {
-    const r = hero.getBoundingClientRect();
-    cx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-    cy = ((e.clientY - r.top) / r.height - 0.5) * 2;
+    cx = ((e.clientX - heroRect.left) / heroRect.width - 0.5) * 2;
+    cy = ((e.clientY - heroRect.top) / heroRect.height - 0.5) * 2;
     ensure();
+  };
+
+  const updateRect = () => { heroRect = hero.getBoundingClientRect(); };
+  const onVisibilityChange = () => {
+    visible = !document.hidden;
+    hero.classList.toggle("hero-paused", !visible);
+    if (visible) {
+      updateRect();
+      if (raf === 0) ensure();
+    }
   };
 
   hero.addEventListener("pointermove", onMove, { passive: true });
@@ -129,4 +145,7 @@ export function initHeroMotion() {
     },
     { passive: true }
   );
+
+  document.addEventListener("visibilitychange", onVisibilityChange);
+  window.addEventListener("resize", updateRect, { passive: true });
 }

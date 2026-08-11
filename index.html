@@ -11,10 +11,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="prefetch" href="/admin.html" as="document" />
     <noscript>
       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
     </noscript>
     <link rel="stylesheet" href="/src/style.css" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Markas Kebaikan",
+      "url": "https://markaskebaikan.id",
+      "logo": "https://markaskebaikan.id/logo.svg",
+      "sameAs": [
+        "https://wa.me/6281234567890",
+        "https://instagram.com/markaskebaikan"
+      ]
+    }
+    </script>
   </head>
   <body>
     <!--
@@ -41,13 +55,16 @@
           <img class="brand-mark" src="/logo.svg" width="22" height="22" alt="Markas Kebaikan" />
           <span class="brand-name" id="brand-name">Markas Kebaikan</span>
         </a>
-        <nav class="nav-links" aria-label="Navigasi utama">
+        <nav class="nav-links" aria-label="Navigasi utama" id="nav-links">
           <a href="#program">Program</a>
           <a href="#kampanye">Kampanye</a>
           <a href="#transparansi">Transparansi</a>
           <a href="#tentang">Tentang Kami</a>
           <a href="#tentang" data-open-status>Cek Status</a>
         </nav>
+        <button class="nav-menu-btn" id="nav-menu-btn" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
         <div class="nav-actions">
           <span class="nav-fund" id="nav-fund">45.000+ dermawan</span>
           <button class="btn btn-primary btn-sm" id="nav-back-btn" type="button">Sedekah Sekarang</button>

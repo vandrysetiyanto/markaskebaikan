@@ -62,7 +62,7 @@
       "computedHash": "bc6c9fc5dbfcd512dbceb7c6940e351b617897ee2429561a183fef358b4fbef5"
     },
     "design-taste-frontend": {
-      "source": "Leonxlnx/taste-skill",
+      "source": "leonxlnx/taste-skill",
       "sourceType": "github",
       "skillPath": "skills/taste-skill/SKILL.md",
       "computedHash": "899b84384f74f540ea5284d9b2e9234e050998b42eacc805410b518d4226c0b3"
@@ -90,6 +90,12 @@
       "sourceType": "github",
       "skillPath": "skills/find-animation-opportunities/SKILL.md",
       "computedHash": "c6b1d0f6d03a11f8772b1cef4ca5cc88301ae8641ac2697c85ffa87eb458e40a"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "93f53fd1c0352d3d7ec17b8f73d7351bf76f4821e55d123c9d2abc2c53ba48e4"
     },
     "full-output-enforcement": {
       "source": "Leonxlnx/taste-skill",
@@ -126,6 +132,12 @@
       "sourceType": "github",
       "skillPath": "skills/imagegen-frontend-web/SKILL.md",
       "computedHash": "27255c7c50181e58add156b2aa2bd5325285b85f04027e4c8b73742d98d7be0a"
+    },
+    "impeccable": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "computedHash": "0dffc06cb6612f109e330b85c0933fcfb9a0e43990a84e2ee25c917b159c2483"
     },
     "improve-animations": {
       "source": "emilkowalski/skills",

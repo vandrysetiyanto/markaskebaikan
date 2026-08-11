@@ -4,7 +4,6 @@ import * as sync from "./sync.js";
 import * as donations from "./donations.js";
 import * as share from "./share.js";
 import { makeShareCardFile } from "./share-card.js";
-import { Chatbot } from "./chatbot.js";
 import { initHeroMotion } from "./hero-motion.js";
 import { payIcon } from "./paylogos.js";
 import { icons as lc } from "./icons.js";
@@ -269,22 +268,22 @@ function runStatusCheck(ref) {
   const result = $("#status-result");
   const input = $("#status-ref-input");
   if (!needle) {
-    result.innerHTML = `<p style="margin:0">Masukkan ref donasi di atas untuk mengecek status.</p>`;
+    result.innerHTML = `<p class="status-result-p">Masukkan ref donasi di atas untuk mengecek status.</p>`;
     input.focus();
     return;
   }
   const d = store.findDonationByRef(needle);
   if (!d) {
     result.innerHTML = `
-      <p style="margin:0 0 14px">Ref <strong>${esc(needle)}</strong> tidak ditemukan.</p>
-      <p>Kemungkinan donasi dibuat dari perangkat lain atau data perangkat ini telah dibersihkan. Hubungi kami via WhatsApp untuk dibantu.</p>
-      <div class="donate-actions" style="margin-top:14px">
+      <p class="status-result-p">Ref <strong>${esc(needle)}</strong> tidak ditemukan.</p>
+      <p class="status-result-p">Kemungkinan donasi dibuat dari perangkat lain atau data perangkat ini telah dibersihkan. Hubungi kami via WhatsApp untuk dibantu.</p>
+      <div class="donate-actions status">
         <a class="btn btn-primary" href="${store.waStatusUrl(campaign.contactWhatsApp, `Assalamu'alaikum, saya ingin mengecek status donasi dengan ref ${needle} di ${campaign.name}.`)}" target="_blank" rel="noopener">Hubungi via WhatsApp</a>
       </div>`;
     return;
   }
   result.innerHTML = `
-    <p style="margin:0 0 14px">Ref <strong>${esc(d.ref)}</strong></p>
+    <p class="status-result-p">Ref <strong>${esc(d.ref)}</strong></p>
     <div class="status-detail">
       <div class="status-row"><span>Status</span><strong>${statusPill(d.status)}</strong></div>
       <div class="status-row"><span>Tujuan</span><strong>${esc(donationTargetLabel(d))}</strong></div>
@@ -955,6 +954,26 @@ function initNav() {
   const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 8);
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
+
+  const menuBtn = document.getElementById("nav-menu-btn");
+  const navLinks = document.getElementById("nav-links");
+  if (menuBtn && navLinks) {
+    const toggle = (open) => {
+      navLinks.classList.toggle("open", open);
+      menuBtn.setAttribute("aria-expanded", String(open));
+    };
+    menuBtn.addEventListener("click", () => toggle(!navLinks.classList.contains("open")));
+    navLinks.addEventListener("click", (e) => {
+      if (e.target.tagName === "A" && navLinks.classList.contains("open")) {
+        toggle(false);
+      }
+    });
+    document.addEventListener("click", (e) => {
+      if (navLinks.classList.contains("open") && !navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
+        toggle(false);
+      }
+    });
+  }
 }
 
 /* ---------- Scroll reveal ---------- */
@@ -990,6 +1009,12 @@ function initScrollReveal() {
   $$(".reveal, .reveal-stagger").forEach((el) => io.observe(el));
 }
 
+function initChatbot() {
+  import("./chatbot.js").then(({ Chatbot }) => {
+    new Chatbot();
+  });
+}
+
 function boot() {
   renderBrand();
   renderHero();
@@ -1002,7 +1027,7 @@ function boot() {
   initNav();
   initScrollReveal();
   initHeroMotion();
-  new Chatbot();
+  initChatbot();
   window.addEventListener("mk:synced", () => {
     renderStats();
     renderCampaigns();

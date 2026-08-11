@@ -33,7 +33,7 @@ const ICONS = {
 };
 
 function proofCell(d) {
-  if (!d.proof) return '<span style="color:var(--muted)">—</span>';
+  if (!d.proof) return '<span class="text-muted">—</span>';
   return `<button class="icon-btn" type="button" data-proof="${d.id}" aria-label="Lihat bukti">${ICONS.image}</button>`;
 }
 
@@ -65,9 +65,22 @@ export function filterDonations(list, { q = "", status = "" } = {}, labeler) {
   });
 }
 
+function filterDistributions(list, { q = "", programId = "" } = {}) {
+  const needle = q.trim().toLowerCase();
+  return list.filter((d) => {
+    if (programId && String(d.programId) !== String(programId)) return false;
+    if (!needle) return true;
+    const p = campaign.programs.find((x) => x.id === d.programId);
+    const programName = p ? p.title : d.programId;
+    const base = [programName, d.recipient, d.note, String(d.amount), fmtDate(new Date(d.createdAt))];
+    return base.some((x) => String(x ?? "").toLowerCase().includes(needle));
+  });
+}
+
 const filter = {
   donors: { q: "", status: "" },
   programs: { q: "", status: "" },
+  dist: { q: "", programId: "" },
 };
 
 const selected = {
@@ -384,7 +397,7 @@ function renderDonors() {
     list
       .map((d) => {
         const c = store.getCampaignsRaw().find((x) => String(x.id) === String(d.campaignId));
-        const name = `${esc(d.name)}${d.anonymous ? ' <span style="color:var(--muted);font-weight:400">(anonim)</span>' : ""}`;
+        const name = `${esc(d.name)}${d.anonymous ? ' <span class="text-muted">(anonim)</span>' : ""}`;
         return `
         <tr>
           ${selectCell("donors", d.id)}
@@ -452,8 +465,8 @@ function renderPaymentMethods() {
       .map((m) => {
         const detail =
           m.kind === "va"
-            ? `${esc(m.vaName || "-")}<br><span style="font-variant-numeric:tabular-nums">${esc(m.vaNumber || "-")}</span>`
-            : '<span style="color:var(--muted)">-</span>';
+            ? `${esc(m.vaName || "-")}<br><span class="va-number">${esc(m.vaNumber || "-")}</span>`
+            : '<span class="text-muted">-</span>';
         const status =
           m.enabled === false
             ? '<span class="status-pill err">Nonaktif</span>'
@@ -462,7 +475,7 @@ function renderPaymentMethods() {
         const toggleLabel = m.enabled === false ? "Aktifkan" : "Nonaktifkan";
         return `
         <tr>
-          <td data-primary>${logoSvg(m) ? `<span class="cell-thumb">${payIcon(m)}</span>` : `<span class="cell-thumb cell-thumb-fallback">${esc((m.label || "?").slice(0, 1).toUpperCase())}</span>`} <span style="font-weight:600">${esc(m.label)}</span></td>
+          <td data-primary>${logoSvg(m) ? `<span class="cell-thumb">${payIcon(m)}</span>` : `<span class="cell-thumb cell-thumb-fallback">${esc((m.label || "?").slice(0, 1).toUpperCase())}</span>`} <span class="strong">${esc(m.label)}</span></td>
           <td data-label="Jenis">${esc(m.kind === "va" ? "Virtual Account" : "QRIS / E-Wallet")}</td>
           <td data-label="Catatan">${esc(m.note || "-")}</td>
           <td data-label="Detail VA">${detail}</td>
@@ -702,7 +715,10 @@ function renderRekap() {
 }
 
 function renderDistLog() {
-  const list = store.getDistributions();
+  const all = store.getDistributions();
+  const list = filterDistributions(all, filter.dist);
+  const countEl = $("#dist-count");
+  if (countEl) countEl.textContent = `${list.length} dari ${all.length} catatan`;
   $("#dist-body").innerHTML =
     list
       .map((d) => {
@@ -768,9 +784,12 @@ function exportRekap(kind) {
 }
 
 function initDistributions() {
-  $("#dist-program").innerHTML = campaign.programs
+  const programOpts = campaign.programs
     .map((p) => `<option value="${esc(p.id)}">${esc(p.title)}</option>`)
     .join("");
+  $("#dist-program").innerHTML = programOpts;
+  const filterEl = $("#dist-program-filter");
+  if (filterEl) filterEl.innerHTML = `<option value="">Semua program</option>` + programOpts;
   $("#dist-date").value = new Date().toISOString().slice(0, 10);
   $("#dist-form").addEventListener("submit", (e) => {
     e.preventDefault();
@@ -780,6 +799,24 @@ function initDistributions() {
   $("#dist-amount").addEventListener("input", updateDistBalanceHint);
   $("#export-rekap-csv").addEventListener("click", () => exportRekap("csv"));
   $("#export-rekap-xls").addEventListener("click", () => exportRekap("xls"));
+  const distSearch = $("#dist-search");
+  const distFilter = $("#dist-program-filter");
+  if (distSearch) {
+    let distTimer;
+    distSearch.addEventListener("input", (e) => {
+      clearTimeout(distTimer);
+      distTimer = setTimeout(() => {
+        filter.dist.q = e.target.value;
+        renderDistLog();
+      }, 250);
+    });
+  }
+  if (distFilter) {
+    distFilter.addEventListener("change", (e) => {
+      filter.dist.programId = e.target.value;
+      renderDistLog();
+    });
+  }
 }
 
 /* ---------- Table tools (search & filter) ---------- */
